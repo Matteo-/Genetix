@@ -14,16 +14,20 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    partita.cpp \
-    tavolo.cpp \
     umano.cpp \
-    ai.cpp
+    ai.cpp \
+    game.cpp \
+    table.cpp \
+    engine.cpp \
+    brain.cpp
 
 HEADERS  += mainwindow.h \
-    giocatore.h \
-    partita.h \
-    tavolo.h \
     umano.h \
-    ai.h
+    ai.h \
+    game.h \
+    player.h \
+    table.h \
+    engine.h \
+    brain.h
 
 FORMS    += mainwindow.ui

@@ -1,14 +1,17 @@
 #ifndef UMANO_H
 #define UMANO_H
 
-#include <giocatore.h>
-#include <tavolo.h>
+#include "player.h"
+#include "table.h"
 
-class Umano : public Giocatore
+class Umano : public Player
 {
 public:
-    int calcolaMossa(Tavolo tavolo, int turno) const;
-
+    Umano();
+    int calcolaMossa(const Table &table, int turno) const;
+    void addScore(int s);
+private:
+    int score;
 };
 
 #endif // UMANO_H

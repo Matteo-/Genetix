@@ -2,28 +2,31 @@
 #define TAVOLO_H
 
 #include <QVector>
-using namespace std;
 
 /**
  * @brief The Tavolo class
  * classe che implementa e gestisce il campo da gioco
  */
-class Tavolo
+class Table
 {
 public:
-    Tavolo();
+    Table();
     void stampa() const;
     QVector< QVector<int> > get() const;
     bool fineGioco() const;
     int calcolaVincitore() const;
     QVector<int> mosseValide(int turno) const;
     int eseguiMossa(int turno, int mossa);
+    int bucheVuote(int turno) const;
+    int differenzaPunti(int turno) const;
     void inizializza();
+    static int avversario(int turno);
 private:
     int numMosse(int turno) const;
 
     QVector< QVector<int> > buca;
     const int fagioli_inizio;
+    static const int numero_buche;
 };
 
 #endif // TAVOLO_H

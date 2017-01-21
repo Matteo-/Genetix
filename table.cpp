@@ -1,21 +1,23 @@
-#include "tavolo.h"
+#include "table.h"
 #include <iostream>
 //#include <QTextStream>
 using namespace std;
 
-Tavolo::Tavolo(): buca(2), fagioli_inizio(3)
+const int Table::numero_buche = 7;
+
+Table::Table(): buca(2), fagioli_inizio(3)
 {
     cout << "[debug] creo un tavolo" << endl; //debug
 
-    buca[0].resize(7);
-    buca[1].resize(7);
+    buca[0].resize(numero_buche);
+    buca[1].resize(numero_buche);
     inizializza();
 
 }
 
 
 
-void Tavolo::inizializza()
+void Table::inizializza()
 {
     for (int i = 0; i < 2; i++)
         for (int j = 0; j < 7; j++)
@@ -26,10 +28,10 @@ void Tavolo::inizializza()
 }
 
 //stampo il campo da gioco
-void Tavolo::stampa() const
+void Table::stampa() const
 {
     //QTextStream cout(stdout);
-    system("clear"); //debug
+    //system("clear"); //debug
 
     cout << "              bantumi:\n";
     cout << "      5    4    3    2    1    0\n";
@@ -57,7 +59,7 @@ void Tavolo::stampa() const
  * @param mossa
  * @return -1 se mossa non valida, 0 se fine turno, 1 se ha un altro turno
  */
-int Tavolo::eseguiMossa(int turno, int mossa)
+int Table::eseguiMossa(int turno, int mossa)
 {
     //controllo se è una mossa valida
     if (mossa < 0 || mossa > 5 || buca[turno][mossa] == 0)
@@ -116,7 +118,7 @@ int Tavolo::eseguiMossa(int turno, int mossa)
  * @param turno
  * @return numero delle mosse valide per il giocatore di quel turno
  */
-int Tavolo::numMosse(int turno) const
+int Table::numMosse(int turno) const
 {
     int n = 0;
     for (int i = 0; i < 6; i++)
@@ -132,7 +134,7 @@ int Tavolo::numMosse(int turno) const
  * return true if endgame is reached
  * return false if game can be continued
  */
-bool Tavolo::fineGioco() const
+bool Table::fineGioco() const
 {
     if(!numMosse(0) || !numMosse(1)) return true;
     else return false;
@@ -145,7 +147,7 @@ bool Tavolo::fineGioco() const
  *         1 se ha vinto giocatore 1
  *         2 se pareggio
  */
-int Tavolo::calcolaVincitore() const
+int Table::calcolaVincitore() const
 {
     if ( buca[0][6] == buca[1][6] )
         return 2;
@@ -159,7 +161,7 @@ int Tavolo::calcolaVincitore() const
  * @param turno
  * @return vettore contenente le mosse possibili per il giocatore di turno
  */
-QVector<int> Tavolo::mosseValide(int turno) const
+QVector<int> Table::mosseValide(int turno) const
 {
     QVector<int> mosse;
 
@@ -169,7 +171,35 @@ QVector<int> Tavolo::mosseValide(int turno) const
     return mosse;
 }
 
-QVector< QVector<int> > Tavolo::get() const
+QVector< QVector<int> > Table::get() const
 {
     return buca;
+}
+
+/**
+ * @brief Table::bucheVuote
+ * @param turno
+ * @return numero di buche vuote per il giocatore di turno
+ */
+int Table::bucheVuote(int turno) const
+{
+    return (numero_buche-1)-mosseValide(turno).size();
+}
+
+/**
+ * @brief Table::differenzaPunti
+ * @param turno
+ * @return ritorna la differenza punti tra i giocatori
+ * < 0 se il giocatore di turno è in svantaggio
+ * = 0 se è in parità
+ * > 0 se è in vantaggio
+ */
+int Table::differenzaPunti(int turno) const
+{
+    return buca[turno][numero_buche-1] - buca[abs(turno-1)][numero_buche-1];
+}
+
+int Table::avversario(int turno)
+{
+    return abs(turno-1);
 }

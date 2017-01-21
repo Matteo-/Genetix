@@ -1,14 +1,21 @@
 #ifndef AI_H
 #define AI_H
 
-#include <giocatore.h>
-#include <tavolo.h>
+#include "player.h"
+#include "table.h"
+#include "brain.h"
 
-class AI : public Giocatore
+class AI : public Player
 {
 public:
-    AI();
-    int calcolaMossa(Tavolo tavolo, int turno) const;
+    friend AI* operator+(const AI&, const AI&);
+    AI(Brain *b);
+    int calcolaMossa(const Table &table, int turno) const;
+    void addScore(int s);
+
+private:
+    int score;
+    Brain *brain;
 };
 
 #endif // AI_H

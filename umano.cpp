@@ -2,11 +2,21 @@
 #include <iostream>
 using namespace std;
 
-int Umano::calcolaMossa(Tavolo tavolo, int turno) const
+Umano::Umano(): score(0)
+{
+
+}
+
+int Umano::calcolaMossa(const Table &table, int turno) const
 {
     int mossa;
-    tavolo.stampa();
+    table.stampa();
     cout << "tocca al giocatore " << turno << " (da 0 a 5)" << endl;
     cin >> mossa;
     return mossa;
+}
+
+void Umano::addScore(int s)
+{
+    score += s;
 }
