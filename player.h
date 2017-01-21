@@ -4,8 +4,7 @@
 #include "table.h"
 
 /**
- * @brief The Giocatore class
- * classe astratta che desscrive l'interfaccia pubblica di un giocatore
+ * @brief classe astratta che desscrive l'interfaccia pubblica di un giocatore
  */
 class Player
 {

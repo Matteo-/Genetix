@@ -12,7 +12,7 @@ class MainWindow : public QWidget
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+    ~MainWindow() = default;
 
 signals:
     void start_clicked();

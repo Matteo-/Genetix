@@ -10,6 +10,9 @@
 #include "table.h"
 #include "umano.h"
 #include "ai.h"
+#include "gameabstract.h"
+
+class Game;
 
 class Engine : public QThread
 {
@@ -46,8 +49,9 @@ private:
 
     int i,j,n;          //variabili di stato ciclo principale
 
-    Game partita;
+    GameAbstract *partita;
     QVector<Player *> players; //giocatori
+    Player *best;
 
     static const float score_vittoria;
     static const float score_pareggio;

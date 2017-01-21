@@ -5,14 +5,17 @@
 #include "table.h"
 #include <QObject>
 #include <QVector>
+#include "gameabstract.h"
+#include "engine.h"
 
 class Engine;
 
-class Game : public QObject
+class Game : public GameAbstract//, public QObject
 {
     Q_OBJECT
+
 public:
-    explicit Game(Engine *en = 0, QObject *parent = 0);
+    explicit Game(Engine *en = 0);
     QVector<Player*> run(Player *g1, Player *g2);
 
 signals:
@@ -29,6 +32,7 @@ private:
     bool engine_control;
     Table bantumi;
     static const int turno_iniziale; //0
+    Engine *eng;
 };
 
 #endif // PARTITA_H

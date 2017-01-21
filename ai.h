@@ -8,10 +8,14 @@
 class AI : public Player
 {
 public:
-    friend AI* operator+(const AI&, const AI&);
     AI(Brain *b);
     int calcolaMossa(const Table &table, int turno) const;
     void addScore(int s);
+    friend AI* operator+(const AI&, const AI&);
+    friend bool operator<(const AI &a, const AI &b);
+    friend bool operator<=(const AI &a, const AI &b);
+    friend bool operator>(const AI &a, const AI &b);
+    friend bool operator>=(const AI &a, const AI &b);
 
 private:
     int score;

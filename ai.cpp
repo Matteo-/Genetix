@@ -19,7 +19,7 @@ AI::AI(Brain *b): score(0), brain(b)
 int AI::calcolaMossa(const Table &table, int turno) const
 {
     QVector<int> mosse;
-    float stima_max = -10000.0f, stima; //valore piccolo fuori scala
+    float stima_max = -10000.0f;//, stima; //valore piccolo fuori scala
     int indice = 0;
     QVector<float> result;
     //parametri di valutazione per la rete neurale
@@ -72,7 +72,8 @@ int AI::calcolaMossa(const Table &table, int turno) const
 //        }
     //}
 
-    return mosse.at(indice);
+    return indice;
+    //return mosse.at(indice);
 }
 
 void AI::addScore(int s)
@@ -84,4 +85,28 @@ AI* operator+(const AI &a, const AI &b)
 {
     AI *figlio = new AI(*a.brain + *b.brain);
     return figlio;
+}
+
+bool operator<(const AI &a, const AI &b)
+{
+    if (a.score < b.score) return true;
+    else return false;
+}
+
+bool operator>(const AI &a, const AI &b)
+{
+    if (a.score > b.score) return true;
+    else return false;
+}
+
+bool operator>=(const AI &a, const AI &b)
+{
+    if (a.score >= b.score) return true;
+    else return false;
+}
+
+bool operator<=(const AI &a, const AI &b)
+{
+    if (a.score <= b.score) return true;
+    else return false;
 }

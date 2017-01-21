@@ -1,25 +1,26 @@
 #include "game.h"
 #include <iostream>
+#include "sleeper.h"
 
 const int Game::turno_iniziale = 0;
 
-Game::Game(Engine *en, QObject *parent): QObject(parent), bantumi(),
-    engine_control(true)
+Game::Game(Engine *en): engine_control(true),
+    bantumi(), eng(en)
 {
     std::cout << "[debug] creo partita" << std::endl; //debug
 
-    if(en)
+    if(eng)
     {
-        connect(this, SIGNAL(mossaErrata()), &en, SLOT(mossaErrata()));
+        connect(this, SIGNAL(mossaErrata()), eng, SLOT(mossaErrata()));
 
         connect(this, SIGNAL(mossaValida(Player*)),
-                en, SLOT(mossaValida(Player*)));
+                eng, SLOT(mossaValida(Player*)));
 
         connect(this, SIGNAL(vittoria(Player*)),
-                en, SLOT(vincitore(Player*)));
+                eng, SLOT(vincitore(Player*)));
 
         connect(this, SIGNAL(pareggio(Player*,Player*)),
-                en, SLOT(pareggio(Player*,Player*)));
+                eng, SLOT(pareggio(Player*,Player*)));
     }
 }
 
@@ -62,7 +63,11 @@ QVector<Player *> Game::run(Player *g1, Player *g2)
                 turno = Table::avversario(turno);
             }
 
-        }while(controllo == -1 && engine_control);
+            //se la partita ha un engine non richiedo la mossa
+        }while(controllo == -1 && eng == 0);
+
+        //termino la partita
+        if(controllo == -1) break;
     }
 
     if(!engine_control)

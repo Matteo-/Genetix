@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     game.cpp \
     table.cpp \
     engine.cpp \
-    brain.cpp
+    brain.cpp \
+    sleeper.cpp
 
 HEADERS  += mainwindow.h \
     umano.h \
@@ -28,6 +29,8 @@ HEADERS  += mainwindow.h \
     player.h \
     table.h \
     engine.h \
-    brain.h
+    brain.h \
+    gameabstract.h \
+    sleeper.h
 
 FORMS    += mainwindow.ui

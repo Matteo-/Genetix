@@ -1,24 +1,14 @@
 #include "engine.h"
 #include <time.h>
-#include <qthread.h>
+//#include <qthread.h>
 #include <iostream> //debug
 #include <QtConcurrentRun>
-
-/**
- * @brief semplice classe per avere un delay
- */
-class Sleeper : public QThread
-{
-public:
-    static void usleep(unsigned long usecs){QThread::usleep(usecs);}
-    static void msleep(unsigned long msecs){QThread::msleep(msecs);}
-    static void sleep(unsigned long secs){QThread::sleep(secs);}
-};
+#include "sleeper.h"
 
 const float Engine::score_vittoria = 10.0f;
 const float Engine::score_pareggio = 5.0f;
 const float Engine::score_mossa_valida = 0.01f;
-const QVector<int> Engine::topologia = {15,10,5,3,2,6};
+const QVector<int> Engine::topologia = {15,10,10,6};
 
 /**
  * @brief costruttore
@@ -30,8 +20,9 @@ Engine::Engine() :
     delay_partita(50),
     numPlayers(10),
     i(0),j(0),n(0),
-    partita(this),
-    players(numPlayers)
+    partita(new Game(this)),
+    players(numPlayers),
+    best(nullptr)
 {
     srand(time(NULL));
     //carico il vettore dei giocatori
@@ -39,7 +30,7 @@ Engine::Engine() :
         players[i] = new AI(new Brain(topologia));
 
     //connessioni
-    connect(this, SIGNAL(stopGame()), &partita, SLOT(stop()));
+    connect(this, SIGNAL(stopGame()), partita, SLOT(stop()));
 
 }
 
@@ -52,17 +43,17 @@ void Engine::run()
 
     while (run_flag)    //ciclo principale
     {
-        for(i; i < players.size() && run_flag; i++)
+        for(; i < players.size() && run_flag; i++)
         {
             //std::cout << "FI = " << i << std::endl; //debug
-            for(j; j < players.size() && run_flag; j++)
+            for(; j < players.size() && run_flag; j++)
             {
                 //std::cout << "FJ = " << j << std::endl; //debug
                 if(i != j)
                 {
                     std::cout << std::endl <<"GEN "<< generation; //debug
                     std::cout << " PARTITA NUMERO " << n << std::endl;
-                    partita.run(players[i], players[j]);
+                    partita->run(players[i], players[j]);
                     n++;
                     Sleeper::msleep(delay_partita);
                 }
