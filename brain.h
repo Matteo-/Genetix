@@ -17,6 +17,7 @@ public:
     //void test();
     void print() const;
     void info() const;
+    static float randTo(float);
 
 private:
     void feedForward();

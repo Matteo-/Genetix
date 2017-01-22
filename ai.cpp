@@ -6,7 +6,7 @@ AI::AI(Brain *b): score(0), brain(b)
 {
     std::cout << std::endl; //debug
     brain->info();  //debug
-    brain->print(); //debug
+    //brain->print(); //debug
     std::cout << std::endl; //debug
 }
 
@@ -23,7 +23,7 @@ int AI::calcolaMossa(const Table &table, int turno) const
     int indice = 0;
     QVector<float> result;
     //parametri di valutazione per la rete neurale
-    //float turno_succ,diff_punti,zero_my,zero_vs;
+    float turno_succ,diff_punti,zero_my,zero_vs;
 
     mosse = table.mosseValide(turno);
     //for(int i = 0; i < mosse.size(); i++)
@@ -33,10 +33,10 @@ int AI::calcolaMossa(const Table &table, int turno) const
         //std::cout << "TAVOLO INIZIALE" << std::endl;    //debug
         //t.stampa(); //debug
         //eseguo la mossa
-//        turno_succ = static_cast <float> (t.eseguiMossa(turno, mosse[i]));
-//        diff_punti = static_cast <float> (t.differenzaPunti(turno));
-//        zero_my = static_cast <float> (t.bucheVuote(turno));
-//        zero_vs = static_cast <float> (t.bucheVuote(Table::avversario(turno)));
+        //turno_succ = static_cast <float> (t.eseguiMossa(turno, mosse[i]));
+        diff_punti = static_cast <float> (t.differenzaPunti(turno));
+        zero_my = static_cast <float> (t.bucheVuote(turno));
+        zero_vs = static_cast <float> (t.bucheVuote(Table::avversario(turno)));
 
 //        stima = brain->getOutput({diff_punti,turno_succ,zero_my,zero_vs})[0];
 
@@ -46,6 +46,9 @@ int AI::calcolaMossa(const Table &table, int turno) const
         for(int i = 0; i < tmp.size(); i++)
             in.append(static_cast <float> (tmp[i]));
         in.append(static_cast <float> (turno));
+        in.append(diff_punti);
+        in.append(zero_my);
+        in.append(zero_vs);
         result = brain->getOutput(in);
 
 
@@ -76,15 +79,30 @@ int AI::calcolaMossa(const Table &table, int turno) const
     //return mosse.at(indice);
 }
 
+float AI::getScore() const
+{
+    return score;
+}
+
 void AI::addScore(int s)
 {
     score += s;
 }
 
+void AI::resetScore()
+{
+    score = 0;
+}
+
 AI* operator+(const AI &a, const AI &b)
 {
-    AI *figlio = new AI(*a.brain + *b.brain);
+    AI *figlio = new AI(*(a.brain) + *(b.brain));
     return figlio;
+}
+
+bool AI::operator<(const Player &a) const
+{
+    return score < a.getScore();
 }
 
 bool operator<(const AI &a, const AI &b)

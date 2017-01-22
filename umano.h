@@ -10,6 +10,9 @@ public:
     Umano();
     int calcolaMossa(const Table &table, int turno) const;
     void addScore(int s);
+    float getScore() const;
+    void resetScore();
+    bool operator<(const Player &) const;
 private:
     int score;
 };

@@ -29,8 +29,7 @@ Brain::Brain(const QVector<int> &topology, QObject *parent) : QObject(parent),  
   m_weights.resize(weights);
   //carico valori random
   for(int i = 0; i < m_weights.size(); i++)
-      m_weights[i] = static_cast <float> (rand()) /
-              (static_cast <float> (RAND_MAX/weightrandmax)); //rand tra 0 e weightrandmax
+      m_weights[i] = randTo(weightrandmax); //rand tra 0 e weightrandmax
   std::cout << "OK" << std::endl; //debug
 }
 
@@ -152,17 +151,40 @@ void Brain::info() const {
 
 Brain* operator+(const Brain &a, const Brain &b)
 {
+    float prob = 0.01f;
+
     if(a.m_topology != b.m_topology)
         return nullptr;
     else
     {
         Brain *figlio = new Brain(a.m_topology);
 
-        //migliorare aggiungendo le mutazioni random
-        figlio->m_weights =
-            a.m_weights.mid(0,a.m_weights.size()/2) +
-            b.m_weights.mid(b.m_weights.size()/2, b.m_weights.size()/2);
+        QVector<float> mid_a = a.m_weights.mid(0,a.m_weights.size()/2);
+        QVector<float> mid_b = b.m_weights.mid(b.m_weights.size()/2,
+                                               b.m_weights.size()/2);
 
+        //mutazioni
+        for (int i = 0; i < mid_a.size(); i++)
+            if(Brain::randTo(1.0f) <= prob)
+            {
+                std::cout<<"MUTAZIONE AVVENUTA"<<std::endl; //debug
+                mid_a[i] = Brain::randTo(Brain::weightrandmax);
+                // emit mutazione()
+            }
+        for (int i = 0; i < mid_b.size(); i++)
+            if(Brain::randTo(1.0f) <= prob)
+            {
+                std::cout<<"MUTAZIONE AVVENUTA"<<std::endl; //debug
+                mid_b[i] = Brain::randTo(Brain::weightrandmax);
+                //emit mutazione()
+            }
+
+        //debug
+        if((mid_a.size()+mid_b.size()) != a.m_weights.size())
+            std::cout<<"[ERRORE LUNGHEZZA STRATO PESI DIVERSA]"<<std::endl;
+        //debug
+
+        figlio->m_weights = mid_a + mid_b;
         return figlio;
     }
 }
@@ -176,4 +198,14 @@ float Brain::FAttivazione(float sum) const
      */
     actfun = 1/(1+ exp(-sum));
     return actfun;
+}
+
+/**
+ * @brief Brain::randTo
+ * @param max
+ * @return float tra 0 e max
+ */
+float Brain::randTo(float max)
+{
+    return static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/max));
 }

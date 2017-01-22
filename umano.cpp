@@ -20,3 +20,18 @@ void Umano::addScore(int s)
 {
     score += s;
 }
+
+float Umano::getScore() const
+{
+    return score;
+}
+
+bool Umano::operator<(const Player &a) const
+{
+    return score < a.getScore();
+}
+
+void Umano::resetScore()
+{
+    score = 0;
+}

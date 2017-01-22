@@ -52,7 +52,8 @@ QVector<Player *> Game::run(Player *g1, Player *g2)
             std::cout << turno << mossa << controllo << " "; //debug
 
             //emetto il segnale di mossa sbagliata
-            if(controllo == -1) emit mossaErrata();
+            if(controllo == -1 && eng) emit mossaErrata();
+
 
             if(controllo == 1) emit mossaValida(giocatori[turno]);
 
@@ -67,7 +68,7 @@ QVector<Player *> Game::run(Player *g1, Player *g2)
         }while(controllo == -1 && eng == 0);
 
         //termino la partita
-        if(controllo == -1) break;
+        if(controllo == -1 && eng) engine_control = false;
     }
 
     if(!engine_control)

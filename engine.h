@@ -40,19 +40,21 @@ signals:
     void stopGame();                //ferma la partita corrente
 
 private:
+    static bool compare(const Player*, const Player*);
+    void selezioneTorneo(float p);
+    Player* crossover(Player*, Player*, float p) const;
+    float fitnessAVG() const;
     int generation;
-    bool run_flag;      //controllo
-
+    bool run_flag;                          //controllo
     int delay_gen;
     int delay_partita;
     int numPlayers;
-
-    int i,j,n;          //variabili di stato ciclo principale
-
+    float p_crossover;
+    float p_selezione;
+    int i,j,n;                              //variabili di stato ciclo principale
     GameAbstract *partita;
-    QVector<Player *> players; //giocatori
-    Player *best;
-
+    QVector<Player *> players;              //giocatori
+    AI best; //introdurre i puntatori smart per rimettere Player *best
     static const float score_vittoria;
     static const float score_pareggio;
     static const float score_mossa_valida;
