@@ -16,7 +16,6 @@ Table::Table(): buca(2), fagioli_inizio(3)
 }
 
 
-
 void Table::inizializza()
 {
     for (int i = 0; i < 2; i++)
@@ -121,7 +120,7 @@ int Table::eseguiMossa(int turno, int mossa)
 int Table::numMosse(int turno) const
 {
     int n = 0;
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < numero_buche-1; i++)
         if(buca[turno][i] != 0)
             n++;
     return n;
@@ -149,10 +148,10 @@ bool Table::fineGioco() const
  */
 int Table::calcolaVincitore() const
 {
-    if ( buca[0][6] == buca[1][6] )
+    if ( buca[0][numero_buche-1] == buca[1][numero_buche-1] )
         return 2;
     else
-        if ( buca[0][6] > buca[1][6] ) return 0;
+        if ( buca[0][numero_buche-1] > buca[1][numero_buche-1] ) return 0;
         else return 1;
 }
 
@@ -165,8 +164,18 @@ QVector<int> Table::mosseValide(int turno) const
 {
     QVector<int> mosse;
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < numero_buche-1; i++)
         if(buca[turno][i] != 0)
+            mosse.append(i);
+    return mosse;
+}
+
+QVector<int> Table::mosseNonValide(int turno) const
+{
+    QVector<int> mosse;
+
+    for (int i = 0; i < numero_buche-1; i++)
+        if(buca[turno][i] == 0)
             mosse.append(i);
     return mosse;
 }
@@ -199,7 +208,7 @@ int Table::differenzaPunti(int turno) const
     return buca[turno][numero_buche-1] - buca[abs(turno-1)][numero_buche-1];
 }
 
-int Table::avversario(int turno)
+int Table::rival(int turno)
 {
     return abs(turno-1);
 }

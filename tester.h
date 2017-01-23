@@ -1,20 +1,20 @@
-#ifndef UMANO_H
-#define UMANO_H
+#ifndef TESTER_H
+#define TESTER_H
 
 #include "player.h"
-#include "table.h"
+#include "ai.h"
 
-class Umano : public Player
+class Tester : public Player
 {
 public:
-    Umano();
+    Tester();
     int calcolaMossa(const Table &table, int turno) const;
     void addScore(int s);
+    bool operator<(const Player &) const;
     float getScore() const;
     void resetScore();
-    bool operator<(const Player &) const;
 private:
     float score;
 };
 
-#endif // UMANO_H
+#endif // TESTER_H

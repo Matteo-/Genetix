@@ -19,10 +19,12 @@ public:
     friend bool operator<=(const AI &a, const AI &b);
     friend bool operator>(const AI &a, const AI &b);
     friend bool operator>=(const AI &a, const AI &b);
+    static int maxValueOf(const QVector<float> v);
 
 private:
     int score;
     Brain *brain;
+    static int max_iter_backprop;
 };
 
 #endif // AI_H

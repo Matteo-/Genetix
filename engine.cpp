@@ -9,8 +9,8 @@
 
 const float Engine::score_vittoria = 10.0f;
 const float Engine::score_pareggio = 5.0f;
-const float Engine::score_mossa_valida = 1.0f;
-const QVector<int> Engine::topologia = {18,10,10,6};
+const float Engine::score_mossa_valida = 0.1f;
+const QVector<int> Engine::topologia = {18,15,10,10,6};
 
 /**
  * @brief costruttore
@@ -18,15 +18,16 @@ const QVector<int> Engine::topologia = {18,10,10,6};
 Engine::Engine() :
     generation(0),
     run_flag(false),
-    delay_gen(1),
+    delay_gen(10),
     delay_partita(50),
-    numPlayers(10),
+    numPlayers(50),
     p_crossover(0.7f),
     p_selezione(0.2f),
     i(0),j(0),n(0),
     partita(new Game(this)),
     players(numPlayers),
-    best(new Brain(topologia))//best(nullptr)
+    best(new Brain(topologia)),//best(nullptr)
+    tester(new Tester())
 {
     srand(time(NULL));
     //carico il vettore dei giocatori
@@ -47,6 +48,8 @@ void Engine::run()
 
     while (run_flag)    //ciclo principale
     {
+        Sleeper::msleep(delay_gen);
+
         for(; i < players.size() && run_flag; i++)
         {
             //std::cout << "FI = " << i << std::endl; //debug
@@ -55,8 +58,9 @@ void Engine::run()
                 //std::cout << "FJ = " << j << std::endl; //debug
                 if(i != j)
                 {
-                    std::cout << std::endl <<"GEN "<< generation; //debug
-                    std::cout << " PARTITA NUMERO " << n << std::endl;
+                    std::cout << std::endl <<"GEN "<< generation //debug
+                        << " PARTITA NUMERO " << n << " ga "<<
+                                 i<<" gb "<<j<<std::endl; //debug
                     partita->run(players[i], players[j]);
                     n++;
                     Sleeper::msleep(delay_partita);
@@ -64,6 +68,17 @@ void Engine::run()
             }
             j = 0;
         }
+
+        //ciclo di prova con il tester
+//        for(; i < players.size() && run_flag; i++)
+//        {
+//            std::cout << std::endl <<"GEN "<< generation; //debug
+//            std::cout << " PARTITA NUMERO " << n << std::endl;
+//            partita->run(players[i], tester);
+//            n++;
+//            Sleeper::msleep(delay_partita);
+//        }
+
         if(run_flag)
         {
             i = 0, j = 0, n = 0;             //resetto lo stato
@@ -89,7 +104,6 @@ void Engine::run()
         }
 
         //da togliere (mettere delay solo sulle partite)
-        Sleeper::msleep(delay_gen);           //aspetto mezzo secondo
     }
 }
 
@@ -120,19 +134,19 @@ void Engine::mossaErrata()
 
 void Engine::mossaValida(Player* p)
 {
-    std::cout<<"mossa eseguita quindi premio"<<std::endl; //debug
+    //std::cout<<"mossa eseguita quindi premio"<<std::endl; //debug
     p->addScore(score_mossa_valida);
 }
 
 void Engine::vincitore(Player* p)
 {
-    std::cout<<"il giocatore ha vinto 10pt"<<std::endl; //debug
+    //std::cout<<"il giocatore ha vinto 10pt"<<std::endl; //debug
     p->addScore(score_vittoria);
 }
 
 void Engine::pareggio(Player* p1, Player* p2)
 {
-    std::cout<<"finita in pareggio 5pt"<<std::endl; //debug
+    //std::cout<<"finita in pareggio 5pt"<<std::endl; //debug
     p1->addScore(score_pareggio);
     p2->addScore(score_pareggio);
 }
@@ -165,9 +179,11 @@ void Engine::selezioneTorneo(float p)
     for(int i = 0; i < players.size(); i++)
     {
         prob = static_cast<int> (round((p*pow((1-p),i)) * numPlayers * 100));
+        using namespace std;
+        cout<<"Prob " << prob << endl;
         //inserisco tanti elementi quanti il numero di probabilita in sel
         for(int j = 0; j < prob; j++)
-            sel.append(players[i]);
+            sel.append(players[i]); //fare con fill
     }
 
     std::cout<<"[elementi in sel] "<<sel.size()<<std::endl; //debug
@@ -191,13 +207,22 @@ void Engine::selezioneTorneo(float p)
 
     for(int i = 0; i < players.size(); i++)
         {
-            Player *a = sel[rand() % sel.size()];//seleziono un individuo a caso
+            int idx = rand() % sel.size();
+            Player *a = sel[idx];//seleziono un individuo a caso
+            //debug
+            using namespace std;
+            //cout << "Indice A "<<idx;
+            //debug
             Player *b;
 
-            //un giocatore non puo accoppiarsi con se stesso
+            //un giocatore non può accoppiarsi con se stesso
             do {
-                b = sel[rand() % sel.size()];
+                idx = rand() % sel.size();
+                b = sel[idx];
             }while (b == a);
+            //debug
+            //cout << " Indice B "<<idx<<endl;
+            //debug
 
             players[i] = crossover(a, b, p_crossover);
         }
@@ -216,7 +241,7 @@ Player* Engine::crossover(Player *a, Player *b, float p) const
     std::cout<<std::endl<<"[FACCIO IL CROSSOVER] "<<std::endl; //debug
     AI *ai = static_cast<AI*>(a);
     AI *bi = static_cast<AI*>(b);
-    if(Brain::randTo(1.0f) <= p)
+    if(Brain::randTo(0,1.0f) <= p)
     {
         Player *c = static_cast<Player*> ((*ai) + (*bi));
         std::cout<<"score figlio "<<c->getScore()<<std::endl; //debug

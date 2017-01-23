@@ -16,11 +16,12 @@ public:
     bool fineGioco() const;
     int calcolaVincitore() const;
     QVector<int> mosseValide(int turno) const;
+    QVector<int> mosseNonValide(int turno) const;
     int eseguiMossa(int turno, int mossa);
     int bucheVuote(int turno) const;
     int differenzaPunti(int turno) const;
     void inizializza();
-    static int avversario(int turno);
+    static int rival(int turno);
 private:
     int numMosse(int turno) const;
 

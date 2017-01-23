@@ -11,6 +11,7 @@
 #include "umano.h"
 #include "ai.h"
 #include "gameabstract.h"
+#include "tester.h"
 
 class Game;
 
@@ -55,6 +56,7 @@ private:
     GameAbstract *partita;
     QVector<Player *> players;              //giocatori
     AI best; //introdurre i puntatori smart per rimettere Player *best
+    Tester *tester;
     static const float score_vittoria;
     static const float score_pareggio;
     static const float score_mossa_valida;

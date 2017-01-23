@@ -24,12 +24,14 @@ Game::Game(Engine *en): engine_control(true),
     }
 }
 
+//ritornare il  numero di giocatore (ricordarsi pareggio)
 QVector<Player *> Game::run(Player *g1, Player *g2)
 {
     //all'inizio ho il permesso di giocare perche va tutto bene
     engine_control = true;
 
     //aggiungo i giocatori
+    //array nativo
     QVector<Player *> giocatori;
     giocatori.append(g1);
     giocatori.append(g2);
@@ -52,7 +54,10 @@ QVector<Player *> Game::run(Player *g1, Player *g2)
             std::cout << turno << mossa << controllo << " "; //debug
 
             //emetto il segnale di mossa sbagliata
-            if(controllo == -1 && eng) emit mossaErrata();
+            //TODO mossaerrata metterla nel player e far ritornare true o false
+            //(umano sempre true) significato continui comunque anche se sei
+            //leso?
+            //if(controllo == -1 && eng) emit mossaErrata();
 
 
             if(controllo == 1) emit mossaValida(giocatori[turno]);
@@ -61,7 +66,7 @@ QVector<Player *> Game::run(Player *g1, Player *g2)
             if(controllo == 0)
             {
                 emit mossaValida(giocatori[turno]);
-                turno = Table::avversario(turno);
+                turno = Table::rival(turno);
             }
 
             //se la partita ha un engine non richiedo la mossa
@@ -88,7 +93,7 @@ QVector<Player *> Game::run(Player *g1, Player *g2)
     {
         //cout << "HA VINTO IL GIOCATORE " << stato_finale << endl; //debug
         //rimuovo il giocatore perdente
-        giocatori.remove(Table::avversario(stato_finale));
+        giocatori.remove(Table::rival(stato_finale));
         emit vittoria(giocatori[0]);
         return giocatori;
     }

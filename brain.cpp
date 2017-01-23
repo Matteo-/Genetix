@@ -2,9 +2,10 @@
 #include <time.h>
 #include <iostream>
 #include <iomanip>
+#include <math.h>       /* exp */
 
 const float Brain::m_bias = 1.0f;
-const float Brain::weightrandmax = 2.0f;
+const float Brain::weightrandmax = 1.0f;
 
 Brain::Brain(const QVector<int> &topology, QObject *parent) : QObject(parent),  m_topology(topology)
 {
@@ -29,7 +30,8 @@ Brain::Brain(const QVector<int> &topology, QObject *parent) : QObject(parent),  
   m_weights.resize(weights);
   //carico valori random
   for(int i = 0; i < m_weights.size(); i++)
-      m_weights[i] = randTo(weightrandmax); //rand tra 0 e weightrandmax
+      //rand tra -weightrandmax e weightrandmax
+      m_weights[i] = randTo(-weightrandmax, weightrandmax);
   std::cout << "OK" << std::endl; //debug
 }
 
@@ -73,10 +75,16 @@ void Brain::feedForward() {
        /*
         * l'ultimo layer lo sommo e basta per prova
         */
-       if (layer != m_topology.size()-1) {
-         m_neurons[neuron] = FAttivazione(sum);
-      }
-      else m_neurons[neuron] = sum;
+//       if (layer != m_topology.size()-1) {
+//         m_neurons[neuron] = FAttivazione(sum);
+//       } else {
+//           m_neurons[neuron] = sum;
+//       }
+
+       //il layer output viene attivato
+       if (layer != m_topology.size()) {
+           m_neurons[neuron] = FAttivazione(sum);
+       }
 
     }
   }
@@ -165,23 +173,25 @@ Brain* operator+(const Brain &a, const Brain &b)
 
         //mutazioni
         for (int i = 0; i < mid_a.size(); i++)
-            if(Brain::randTo(1.0f) <= prob)
+            if(Brain::randTo(0, 1.0f) <= prob)
             {
                 std::cout<<"MUTAZIONE AVVENUTA"<<std::endl; //debug
-                mid_a[i] = Brain::randTo(Brain::weightrandmax);
+                mid_a[i] = Brain::randTo(-Brain::weightrandmax,
+                                         Brain::weightrandmax);
                 // emit mutazione()
             }
         for (int i = 0; i < mid_b.size(); i++)
-            if(Brain::randTo(1.0f) <= prob)
+            if(Brain::randTo(0, 1.0f) <= prob)
             {
-                std::cout<<"MUTAZIONE AVVENUTA"<<std::endl; //debug
-                mid_b[i] = Brain::randTo(Brain::weightrandmax);
+                //std::cout<<"MUTAZIONE AVVENUTA"<<std::endl; //debug
+                mid_b[i] = Brain::randTo(-Brain::weightrandmax,
+                                         Brain::weightrandmax);
                 //emit mutazione()
             }
 
         //debug
-        if((mid_a.size()+mid_b.size()) != a.m_weights.size())
-            std::cout<<"[ERRORE LUNGHEZZA STRATO PESI DIVERSA]"<<std::endl;
+        //if((mid_a.size()+mid_b.size()) != a.m_weights.size())
+            //std::cout<<"[ERRORE LUNGHEZZA STRATO PESI DIVERSA]"<<std::endl;
         //debug
 
         figlio->m_weights = mid_a + mid_b;
@@ -203,9 +213,28 @@ float Brain::FAttivazione(float sum) const
 /**
  * @brief Brain::randTo
  * @param max
- * @return float tra 0 e max
+ * @return float tra min e max
  */
-float Brain::randTo(float max)
+float Brain::randTo(float min, float max)
 {
-    return static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/max));
+    return static_cast<float>(rand())/(RAND_MAX/(max-min))+min;
+
+}
+
+void Brain::backprop(const QVector<float> &out,const QVector<float> &out_expct)
+{
+    float Etot = 0.0f;
+
+    for(int i = 0; i < out.size(); i++)
+    {
+        Etot += squaredError(out_expct[i], out[i]);
+    }
+    //std::cout<<"Etot: "<<Etot<<"\n";
+
+}
+
+float Brain::squaredError(float t, float y) const
+{
+    float learning_rate = 1.0f; //TODO posibilità di modificarla
+    return 0.5f * pow((t - y),2) * learning_rate;
 }
