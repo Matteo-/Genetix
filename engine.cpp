@@ -263,7 +263,6 @@ void Engine::selezioneTorneo(float p)
         cout << " Indice B "<<idx<<endl;
         cout<<"rimuovo l'AI "<<i<<"\t\t"<<__FILE__<<":"<<__LINE__<<"\n";
         //debug
-        delete players[i].get();
         players[i] = crossover(a, b, p_crossover);
     }
 
