@@ -2,37 +2,51 @@
 #include <iostream>
 #include "sleeper.h"
 
+int Game::istanze = 0;
 const int Game::turno_iniziale = 0;
 
 Game::Game(Engine *en): engine_control(true),
     bantumi(), eng(en)
 {
-    std::cout << "[debug] creo partita" << std::endl; //debug
+    //debug
+    istanze++;
+    std::cout<<"creating Game ["<<istanze<<"]....OK\n";
+    //debug
 
     if(eng)
     {
         connect(this, SIGNAL(mossaErrata()), eng, SLOT(mossaErrata()));
 
-        connect(this, SIGNAL(mossaValida(Player*)),
-                eng, SLOT(mossaValida(Player*)));
+        connect(this, SIGNAL(mossaValida(Player *)),
+                eng, SLOT(mossaValida(Player *)));
 
-        connect(this, SIGNAL(vittoria(Player*)),
-                eng, SLOT(vincitore(Player*)));
+        connect(this, SIGNAL(vittoria(Player *)),
+                eng, SLOT(vincitore(Player *)));
 
-        connect(this, SIGNAL(pareggio(Player*,Player*)),
-                eng, SLOT(pareggio(Player*,Player*)));
+        connect(this, SIGNAL(pareggio(Player *,Player *)),
+                eng, SLOT(pareggio(Player *,Player *)));
     }
 }
 
+Game::~Game()
+{
+
+    //debug
+    std::cout<<"deleting Game ["<<istanze<<"]....";
+    istanze--;
+    std::cout<<"OK\n";
+    //debug
+}
+
 //ritornare il  numero di giocatore (ricordarsi pareggio)
-QVector<Player *> Game::run(Player *g1, Player *g2)
+QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2)
 {
     //all'inizio ho il permesso di giocare perche va tutto bene
     engine_control = true;
 
     //aggiungo i giocatori
     //array nativo
-    QVector<Player *> giocatori;
+    QVector<PlayerPtr> giocatori;
     giocatori.append(g1);
     giocatori.append(g2);
 
@@ -60,12 +74,12 @@ QVector<Player *> Game::run(Player *g1, Player *g2)
             //if(controllo == -1 && eng) emit mossaErrata();
 
 
-            if(controllo == 1) emit mossaValida(giocatori[turno]);
+            if(controllo == 1) emit mossaValida(giocatori[turno].get());
 
             //sistemo il turno e ripeto
             if(controllo == 0)
             {
-                emit mossaValida(giocatori[turno]);
+                emit mossaValida(giocatori[turno].get());
                 turno = Table::rival(turno);
             }
 
@@ -86,7 +100,7 @@ QVector<Player *> Game::run(Player *g1, Player *g2)
     if (stato_finale == 2)
     {
         //cout << "PARITA'" << endl; //debug
-        emit pareggio(giocatori[0], giocatori[1]);
+        emit pareggio(giocatori[0].get(), giocatori[1].get());
         return giocatori;
     }
     else
@@ -94,7 +108,7 @@ QVector<Player *> Game::run(Player *g1, Player *g2)
         //cout << "HA VINTO IL GIOCATORE " << stato_finale << endl; //debug
         //rimuovo il giocatore perdente
         giocatori.remove(Table::rival(stato_finale));
-        emit vittoria(giocatori[0]);
+        emit vittoria(giocatori[0].get());
         return giocatori;
     }
 

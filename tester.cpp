@@ -1,8 +1,23 @@
 #include "tester.h"
+#include <iostream>
+
+int Tester::istanze = 0;
 
 Tester::Tester(): score(0)
 {
+    //debug
+    istanze++;
+    std::cout<<"creating Tester ["<<istanze<<"]....OK\n";
+    //debug
+}
 
+Tester::~Tester()
+{
+    //debug
+    std::cout<<"deleting Tester ["<<istanze<<"]....";
+    istanze--;
+    std::cout<<"OK\n";
+    //debug
 }
 
 int Tester::calcolaMossa(const Table &table, int turno) const

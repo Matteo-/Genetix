@@ -9,6 +9,7 @@ class AI : public Player
 {
 public:
     AI(Brain *b);
+    ~AI();
     int calcolaMossa(const Table &table, int turno) const;
     void addScore(int s);
     float getScore() const;
@@ -25,6 +26,7 @@ private:
     int score;
     Brain *brain;
     static int max_iter_backprop;
+    static int istanze;                    //debug memory leak
 };
 
 #endif // AI_H

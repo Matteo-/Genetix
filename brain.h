@@ -10,6 +10,7 @@ class Brain : public QObject
 
 public:
     Brain(const QVector<int> &topology, QObject *parent = 0);
+    ~Brain();
     friend Brain* operator+ (const Brain&, const Brain&);
     //explicit Brain(QObject *parent = 0);
     QVector<float> getOutput(const QVector<float> &input);
@@ -27,11 +28,12 @@ private:
     QVector<float> m_neurons;
     QVector<float> m_weights;
     static const float m_bias;
-    const static float weightrandmax;
+    static const float weightrandmax;
     float FAttivazione(float sum) const;
     //TODO inizializzare e fare funzioni di modifica
     //float eta;
     //float momentum;
+    static int istanze;                    //debug memory leak
 
 signals:
 

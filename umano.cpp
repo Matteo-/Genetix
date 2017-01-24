@@ -2,9 +2,23 @@
 #include <iostream>
 using namespace std;
 
+int Umano::istanze = 0;
+
 Umano::Umano(): score(0)
 {
+    //debug
+    istanze++;
+    std::cout<<"creating Umano ["<<istanze<<"]....OK\n";
+    //debug
+}
 
+Umano::~Umano()
+{
+    //debug
+    std::cout<<"deleting Umano ["<<istanze<<"]....";
+    istanze--;
+    std::cout<<"OK\n";
+    //debug
 }
 
 int Umano::calcolaMossa(const Table &table, int turno) const

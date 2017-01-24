@@ -2,14 +2,15 @@
 #define GAMEABSTRACT_H
 
 #include <QObject>
-class Player;
+#include "player.h"
 
 class GameAbstract : public QObject
 {
     //Q_OBJECT
 public:
-    virtual QVector<Player*> run(Player *g1, Player *g2) = 0;
+    virtual QVector<PlayerPtr> run(PlayerPtr g1, PlayerPtr g2) = 0;
     virtual ~GameAbstract() {}
+protected:
 
 //signals:
 //    virtual void mossaErrata() = 0;

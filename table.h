@@ -11,6 +11,7 @@ class Table
 {
 public:
     Table();
+    ~Table();
     void stampa() const;
     QVector< QVector<int> > get() const;
     bool fineGioco() const;
@@ -28,6 +29,7 @@ private:
     QVector< QVector<int> > buca;
     const int fagioli_inizio;
     static const int numero_buche;
+    static int istanze;                    //debug memory leak
 };
 
 #endif // TAVOLO_H

@@ -8,6 +8,7 @@ class Tester : public Player
 {
 public:
     Tester();
+    ~Tester();
     int calcolaMossa(const Table &table, int turno) const;
     void addScore(int s);
     bool operator<(const Player &) const;
@@ -15,6 +16,7 @@ public:
     void resetScore();
 private:
     float score;
+    static int istanze;                    //debug memory leak
 };
 
 #endif // TESTER_H

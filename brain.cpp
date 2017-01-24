@@ -4,12 +4,16 @@
 #include <iomanip>
 #include <math.h>       /* exp */
 
+int Brain::istanze = 0;
 const float Brain::m_bias = 1.0f;
-const float Brain::weightrandmax = 1.0f;
+const float Brain::weightrandmax = 2.0f;
 
 Brain::Brain(const QVector<int> &topology, QObject *parent) : QObject(parent),  m_topology(topology)
 {
-  std::cout << "creating Brain...."; //debug
+    //debug
+    istanze++;
+    std::cout<<"creating Brain ["<<istanze<<"]....";
+    //debug
 
   int neurons = 0;  // numero di neuroni totali da allocare
   int weights = 0;  // numero di pesi totali da allocare
@@ -33,6 +37,15 @@ Brain::Brain(const QVector<int> &topology, QObject *parent) : QObject(parent),  
       //rand tra -weightrandmax e weightrandmax
       m_weights[i] = randTo(-weightrandmax, weightrandmax);
   std::cout << "OK" << std::endl; //debug
+}
+
+Brain::~Brain()
+{
+    //debug
+    std::cout<<"deleting Brain ["<<istanze<<"]....";
+    istanze--;
+    std::cout<<"OK\n";
+    //debug
 }
 
 void Brain::feedForward() {
@@ -159,20 +172,37 @@ void Brain::info() const {
 
 Brain* operator+(const Brain &a, const Brain &b)
 {
+    //debug
+    using namespace std;
+    cout<<"[STAMPO A]"<<__FILE__<<__LINE__<<"\n";
+    a.info();
+    cout<<"[STAMPO B]\n";
+    b.info();
+
+    //debug
+
     float prob = 0.01f;
 
     if(a.m_topology != b.m_topology)
+    {
+        std::cout<<"[ERRORE TOPOLOGIA DIVERSA]\n"; //debug
         return nullptr;
+    }
     else
     {
         Brain *figlio = new Brain(a.m_topology);
+        int middle = a.m_weights.size()/2;
+        std::cout<<"middle: "<<middle<<"\n";
 
-        QVector<float> mid_a = a.m_weights.mid(0,a.m_weights.size()/2);
-        QVector<float> mid_b = b.m_weights.mid(b.m_weights.size()/2,
-                                               b.m_weights.size()/2);
+        QVector<float> mid_a = a.m_weights.mid(0,middle);
+        QVector<float> mid_b = b.m_weights.mid(middle,
+                                               b.m_weights.size()-1);
+        std::cout<<"size a: "<<mid_a.size()<<"size b: "<<mid_b.size()<<
+                    "size f: "<<figlio->m_weights.size()<<"\n";
 
         //mutazioni
         for (int i = 0; i < mid_a.size(); i++)
+        {
             if(Brain::randTo(0, 1.0f) <= prob)
             {
                 std::cout<<"MUTAZIONE AVVENUTA"<<std::endl; //debug
@@ -180,7 +210,9 @@ Brain* operator+(const Brain &a, const Brain &b)
                                          Brain::weightrandmax);
                 // emit mutazione()
             }
+        }
         for (int i = 0; i < mid_b.size(); i++)
+        {
             if(Brain::randTo(0, 1.0f) <= prob)
             {
                 //std::cout<<"MUTAZIONE AVVENUTA"<<std::endl; //debug
@@ -188,11 +220,7 @@ Brain* operator+(const Brain &a, const Brain &b)
                                          Brain::weightrandmax);
                 //emit mutazione()
             }
-
-        //debug
-        //if((mid_a.size()+mid_b.size()) != a.m_weights.size())
-            //std::cout<<"[ERRORE LUNGHEZZA STRATO PESI DIVERSA]"<<std::endl;
-        //debug
+        }
 
         figlio->m_weights = mid_a + mid_b;
         return figlio;

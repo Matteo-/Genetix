@@ -1,6 +1,7 @@
 #ifndef GIOCATORE_H
 #define GIOCATORE_H
 
+#include <memory>
 #include "table.h"
 
 /**
@@ -16,7 +17,9 @@ public:
     virtual float getScore() const = 0;
     virtual void resetScore() = 0;
     virtual ~Player() {}
-private:
+protected:
 };
+
+typedef std::shared_ptr<Player> PlayerPtr;
 
 #endif // GIOCATORE_H

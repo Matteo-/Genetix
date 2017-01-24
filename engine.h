@@ -21,6 +21,7 @@ class Engine : public QThread
 
 public:
     Engine();
+    ~Engine();
     void stop();
     void run();
 
@@ -31,9 +32,9 @@ public slots:
     void setDelay(int);
     //Game
     void mossaErrata();
-    void mossaValida(Player*);
-    void vincitore(Player*);
-    void pareggio(Player*, Player*);
+    void mossaValida(Player *);
+    void vincitore(Player *);
+    void pareggio(Player *, Player *);
 
 signals:
     void GenChanged(int newGen);    //segnala l'avanzamento di gen.
@@ -41,9 +42,9 @@ signals:
     void stopGame();                //ferma la partita corrente
 
 private:
-    static bool compare(const Player*, const Player*);
+    static bool compare(const PlayerPtr, const PlayerPtr);
     void selezioneTorneo(float p);
-    Player* crossover(Player*, Player*, float p) const;
+    PlayerPtr crossover(PlayerPtr, PlayerPtr, float p) const;
     float fitnessAVG() const;
     int generation;
     bool run_flag;                          //controllo
@@ -54,13 +55,13 @@ private:
     float p_selezione;
     int i,j,n;                              //variabili di stato ciclo principale
     GameAbstract *partita;
-    QVector<Player *> players;              //giocatori
-    AI best; //introdurre i puntatori smart per rimettere Player *best
-    Tester *tester;
+    QVector<PlayerPtr> players;              //giocatori
+    PlayerPtr best;
     static const float score_vittoria;
     static const float score_pareggio;
     static const float score_mossa_valida;
     static const QVector<int> topologia;
+    static int istanze;                    //debug memory leak
 };
 
 #endif // ENGINE_H

@@ -16,7 +16,8 @@ class Game : public GameAbstract//, public QObject
 
 public:
     explicit Game(Engine *en = 0);
-    QVector<Player*> run(Player *g1, Player *g2);
+    ~Game();
+    QVector<PlayerPtr> run(PlayerPtr g1, PlayerPtr g2);
 
 signals:
     void mossaErrata();
@@ -33,6 +34,7 @@ private:
     Table bantumi;
     static const int turno_iniziale; //0
     Engine *eng;
+    static int istanze;                    //debug memory leak
 };
 
 #endif // PARTITA_H

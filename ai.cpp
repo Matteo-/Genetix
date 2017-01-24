@@ -4,13 +4,28 @@
 #include <cstdio> //debug
 
 int AI::max_iter_backprop = 500;
+int AI::istanze = 0;
 
 AI::AI(Brain *b): score(0), brain(b)
 {
+    //debug
+    istanze++;
+    std::cout<<"creating AI ["<<istanze<<"]....OK\n";
+    //debug
 //    std::cout << std::endl; //debug
 //    brain->info();  //debug
 //    brain->print(); //debug
 //    std::cout << std::endl; //debug
+}
+
+AI::~AI()
+{
+    delete brain;
+    //debug
+    std::cout<<"deleting AI ["<<istanze<<"]....";   //debug
+    istanze--;
+    std::cout<<"OK\n";
+    //debug
 }
 
 /**
@@ -49,7 +64,7 @@ int AI::calcolaMossa(const Table &table, int turno) const
         in.append(static_cast <float> (turno));
         in.append(diff_punti/10);
         in.append(zero_my/10);
-        in.append(zero_vs/10);
+        in.append(-zero_vs/10);
         result = brain->getOutput(in);
 
         //std::cout<<"MOSSA "<<turno<<" ESEGUITA"<<std::endl;//debug
@@ -122,6 +137,9 @@ void AI::resetScore()
 
 AI* operator+(const AI &a, const AI &b)
 {
+    //debug
+    std::cout<<"faccio la + tra in AI\n";
+    //debug
     AI *figlio = new AI(*(a.brain) + *(b.brain));
     return figlio;
 }

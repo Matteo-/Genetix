@@ -3,16 +3,29 @@
 //#include <QTextStream>
 using namespace std;
 
+int Table::istanze = 0;
 const int Table::numero_buche = 7;
 
 Table::Table(): buca(2), fagioli_inizio(3)
 {
-    cout << "[debug] creo un tavolo" << endl; //debug
+    //debug
+    istanze++;
+    std::cout<<"creating Table ["<<istanze<<"]....OK\n";
+    //debug
 
     buca[0].resize(numero_buche);
     buca[1].resize(numero_buche);
     inizializza();
 
+}
+
+Table::~Table()
+{
+    //debug
+    std::cout<<"deleting Table ["<<istanze<<"]....";
+    istanze--;
+    std::cout<<"OK\n";
+    //debug
 }
 
 
