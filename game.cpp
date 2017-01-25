@@ -17,14 +17,14 @@ Game::Game(Engine *en): engine_control(true),
     {
         connect(this, SIGNAL(mossaErrata()), eng, SLOT(mossaErrata()));
 
-        connect(this, SIGNAL(mossaValida(Player *)),
-                eng, SLOT(mossaValida(Player *)));
+        connect(this, SIGNAL(mossaValida(PlayerPtr)),
+                eng, SLOT(mossaValida(PlayerPtr)));
 
-        connect(this, SIGNAL(vittoria(Player *)),
-                eng, SLOT(vincitore(Player *)));
+        connect(this, SIGNAL(vittoria(PlayerPtr)),
+                eng, SLOT(vincitore(PlayerPtr)));
 
-        connect(this, SIGNAL(pareggio(Player *,Player *)),
-                eng, SLOT(pareggio(Player *,Player *)));
+        connect(this, SIGNAL(pareggio(PlayerPtr,PlayerPtr)),
+                eng, SLOT(pareggio(PlayerPtr,PlayerPtr)));
     }
 }
 
@@ -46,9 +46,9 @@ QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2)
 
     //aggiungo i giocatori
     //array nativo
-    QVector<PlayerPtr> giocatori;
-    giocatori.append(g1);
-    giocatori.append(g2);
+    QVector<PlayerPtr> giocatori(2);
+    giocatori[0] = g1;
+    giocatori[1] = g2;
 
     //inizializzo il campo da gioco
     bantumi.inizializza();
@@ -74,12 +74,12 @@ QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2)
             //if(controllo == -1 && eng) emit mossaErrata();
 
 
-            if(controllo == 1) emit mossaValida(giocatori[turno].get());
+            if(controllo == 1) emit mossaValida(giocatori[turno]);
 
             //sistemo il turno e ripeto
             if(controllo == 0)
             {
-                emit mossaValida(giocatori[turno].get());
+                emit mossaValida(giocatori[turno]);
                 turno = Table::rival(turno);
             }
 
@@ -100,7 +100,7 @@ QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2)
     if (stato_finale == 2)
     {
         //cout << "PARITA'" << endl; //debug
-        emit pareggio(giocatori[0].get(), giocatori[1].get());
+        emit pareggio(giocatori[0], giocatori[1]);
         return giocatori;
     }
     else
@@ -108,7 +108,7 @@ QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2)
         //cout << "HA VINTO IL GIOCATORE " << stato_finale << endl; //debug
         //rimuovo il giocatore perdente
         giocatori.remove(Table::rival(stato_finale));
-        emit vittoria(giocatori[0].get());
+        emit vittoria(giocatori[0]);
         return giocatori;
     }
 

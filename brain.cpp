@@ -6,7 +6,7 @@
 
 int Brain::istanze = 0;
 const float Brain::m_bias = 1.0f;
-const float Brain::weightrandmax = 2.0f;
+const float Brain::weightrandmax = 1.0f; //from -weightra.. to +weighra..
 
 Brain::Brain(const QVector<int> &topology, QObject *parent) : QObject(parent),  m_topology(topology)
 {
@@ -173,15 +173,14 @@ void Brain::info() const {
 Brain* operator+(const Brain &a, const Brain &b)
 {
     //debug
-    using namespace std;
-    cout<<"[STAMPO A]"<<__FILE__<<__LINE__<<"\n";
-    a.info();
-    cout<<"[STAMPO B]\n";
-    b.info();
-
+//    using namespace std;
+//    cout<<"[STAMPO A]"<<__FILE__<<__LINE__<<"\n";
+//    a.info();
+//    cout<<"[STAMPO B]\n";
+//    b.info();
     //debug
 
-    float prob = 0.01f;
+    float prob = 0.015f;
 
     if(a.m_topology != b.m_topology)
     {
@@ -192,20 +191,24 @@ Brain* operator+(const Brain &a, const Brain &b)
     {
         Brain *figlio = new Brain(a.m_topology);
         int middle = a.m_weights.size()/2;
-        std::cout<<"middle: "<<middle<<"\n";
+
+//        std::cout<<"middle: "<<middle<<"\n"; //debug
 
         QVector<float> mid_a = a.m_weights.mid(0,middle);
         QVector<float> mid_b = b.m_weights.mid(middle,
                                                b.m_weights.size()-1);
-        std::cout<<"size a: "<<mid_a.size()<<"size b: "<<mid_b.size()<<
-                    "size f: "<<figlio->m_weights.size()<<"\n";
+
+        //debug
+//        std::cout<<"size a: "<<mid_a.size()<<"size b: "<<mid_b.size()<<
+//                    "size f: "<<figlio->m_weights.size()<<"\n";
+        //debug
 
         //mutazioni
         for (int i = 0; i < mid_a.size(); i++)
         {
             if(Brain::randTo(0, 1.0f) <= prob)
             {
-                std::cout<<"MUTAZIONE AVVENUTA"<<std::endl; //debug
+                //std::cout<<"MUTAZIONE AVVENUTA"<<std::endl; //debug
                 mid_a[i] = Brain::randTo(-Brain::weightrandmax,
                                          Brain::weightrandmax);
                 // emit mutazione()

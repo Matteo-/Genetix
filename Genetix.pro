@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     engine.cpp \
     brain.cpp \
     sleeper.cpp \
-    tester.cpp
+    tester.cpp \
+    style.cpp
 
 HEADERS  += mainwindow.h \
     umano.h \
@@ -33,6 +34,9 @@ HEADERS  += mainwindow.h \
     brain.h \
     gameabstract.h \
     sleeper.h \
-    tester.h
+    tester.h \
+    style.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES +=

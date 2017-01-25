@@ -32,9 +32,9 @@ public slots:
     void setDelay(int);
     //Game
     void mossaErrata();
-    void mossaValida(Player *);
-    void vincitore(Player *);
-    void pareggio(Player *, Player *);
+    void mossaValida(PlayerPtr);
+    void vincitore(PlayerPtr);
+    void pareggio(PlayerPtr, PlayerPtr);
 
 signals:
     void GenChanged(int newGen);    //segnala l'avanzamento di gen.

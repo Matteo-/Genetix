@@ -11,7 +11,7 @@ int Engine::istanze = 0;
 const float Engine::score_vittoria = 10.0f;
 const float Engine::score_pareggio = 5.0f;
 const float Engine::score_mossa_valida = 0.1f;
-const QVector<int> Engine::topologia = {18,4,4,6};
+const QVector<int> Engine::topologia = {18,400,6};
 
 /**
  * @brief costruttore
@@ -21,9 +21,9 @@ Engine::Engine() :
     run_flag(false),
     delay_gen(1),
     delay_partita(50),
-    numPlayers(10),
-    p_crossover(0.7f),
-    p_selezione(0.3f),
+    numPlayers(30),
+    p_crossover(0.8f),
+    p_selezione(0.5f),
     i(0),j(0),n(0),
     partita(new Game(this)),
     players(numPlayers),
@@ -111,6 +111,7 @@ void Engine::run()
 
             //ordino in base al punteggio
             qSort(players.begin(), players.end(), Engine::compare);
+
             //debug stampo i punteggi
             for(int i = 0; i < numPlayers; i++)
                 std::cout<<"("<<i<<","<<players[i]->getScore()<<") ";
@@ -158,19 +159,19 @@ void Engine::mossaErrata()
     emit stopGame();
 }
 
-void Engine::mossaValida(Player *p)
+void Engine::mossaValida(PlayerPtr p)
 {
     //std::cout<<"mossa eseguita quindi premio"<<std::endl; //debug
     p->addScore(score_mossa_valida);
 }
 
-void Engine::vincitore(Player *p)
+void Engine::vincitore(PlayerPtr p)
 {
     //std::cout<<"il giocatore ha vinto 10pt"<<std::endl; //debug
     p->addScore(score_vittoria);
 }
 
-void Engine::pareggio(Player *p1, Player *p2)
+void Engine::pareggio(PlayerPtr p1, PlayerPtr p2)
 {
     //std::cout<<"finita in pareggio 5pt"<<std::endl; //debug
     p1->addScore(score_pareggio);
@@ -202,10 +203,10 @@ void Engine::selezioneTorneo(float p)
     int prob;
 
     //debug
-    for(int i = 0; i < players.size(); i++) {
-        PlayerPtr prova = players[i];
-        std::cout<<"player "<<i<<" check\n";
-    }
+//    for(int i = 0; i < players.size(); i++) {
+//        PlayerPtr prova = players[i];
+//        std::cout<<"player "<<i<<" check\n";
+//    }
     //debug
 
     //carico il vettore i selezione
@@ -214,8 +215,12 @@ void Engine::selezioneTorneo(float p)
         /* resetto gli score per ripartire da 0 con la generazione successiva */
         players[i]->resetScore();
         prob = static_cast<int> (round((p*pow((1-p),i)) * numPlayers * 100))+1;
-        using namespace std;
-        cout<<"Prob " << prob << endl;
+
+        //debug
+//        using namespace std;
+//        cout<<"Prob " << prob << endl;
+        //debug
+
         //inserisco tanti elementi quanti il numero di probabilita in sel
         int offset = sel.size();
         sel.resize(sel.size()+prob);
@@ -225,7 +230,7 @@ void Engine::selezioneTorneo(float p)
         }
     }
 
-    std::cout<<"[elementi in sel] "<<sel.size()<<std::endl; //debug
+    //std::cout<<"[elementi in sel] "<<sel.size()<<std::endl; //debug
 
     //creo la nuova popolazione
 //    for(int i = 0; i < players.size()-1; i++)
@@ -249,8 +254,8 @@ void Engine::selezioneTorneo(float p)
         int idx = rand() % sel.size();
         PlayerPtr a = sel[idx];//seleziono un individuo a caso
         //debug
-        using namespace std;
-        cout << "Indice A "<<idx;
+//        using namespace std;
+//        cout << "Indice A "<<idx;
         //debug
         PlayerPtr b;
 
@@ -260,8 +265,8 @@ void Engine::selezioneTorneo(float p)
             b = sel[idx];
         }while (b == a);
         //debug
-        cout << " Indice B "<<idx<<endl;
-        cout<<"rimuovo l'AI "<<i<<"\t\t"<<__FILE__<<":"<<__LINE__<<"\n";
+//        cout << " Indice B "<<idx<<endl;
+//        cout<<"rimuovo l'AI "<<i<<"\t\t"<<__FILE__<<":"<<__LINE__<<"\n";
         //debug
         players[i] = crossover(a, b, p_crossover);
     }
@@ -282,9 +287,9 @@ PlayerPtr Engine::crossover(PlayerPtr a, PlayerPtr b, float p) const
     //AI *bi = dynamic_cast<AI*>(b.get());
     if(Brain::randTo(0,1.0f) <= p)
     {
-        std::cout<<"faccio la + in engine\n";
+//        std::cout<<"faccio la + in engine\n";
         PlayerPtr c = static_cast<PlayerPtr> (*(AI*)&(*a) + *(AI*)&(*b));
-        std::cout<<"score figlio "<<c->getScore()<<std::endl; //debug
+//        std::cout<<"score figlio "<<c->getScore()<<std::endl; //debug
         return c;
     }
     else

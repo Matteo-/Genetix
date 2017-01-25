@@ -21,9 +21,9 @@ public:
 
 signals:
     void mossaErrata();
-    void mossaValida(Player*);
-    void vittoria(Player*);
-    void pareggio(Player*,Player*);
+    void mossaValida(PlayerPtr);
+    void vittoria(PlayerPtr);
+    void pareggio(PlayerPtr,PlayerPtr);
 
 public slots:
     void stop();

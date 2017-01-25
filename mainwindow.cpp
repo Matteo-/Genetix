@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     StopButton->setFont(buttonFont);
     connect(StopButton, SIGNAL(clicked()), this, SLOT(on_stop_clicked()));
 
-    lcdGen = new QLCDNumber(6, this);
+    lcdGen = new QLCDNumber(9, this);
     lcdGen->setSegmentStyle(QLCDNumber::Filled);
 
     QLCDNumber *delay = new QLCDNumber(4, this);

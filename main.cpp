@@ -1,15 +1,30 @@
 #include "mainwindow.h"
 #include <QApplication>
+#include <QSplashScreen>
 
 #include "engine.h"
+#include "sleeper.h"
+#include "style.h"
 
-//test
-#include "brain.h"
-#include <iostream>
+#include <iostream> //debug
+#include <QThread>
+
+class T : public QThread
+{
+    void run() { Sleeper::sleep(5); }
+};
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    QPixmap pixmap(Style::logo());
+    QSplashScreen splash(pixmap);
+    splash.setEnabled(false);
+    splash.show();
+    Sleeper::msleep(20);
+    a.processEvents();
+
     Engine engine;
     MainWindow w;
 
@@ -26,29 +41,14 @@ int main(int argc, char *argv[])
     QObject::connect(&w, SIGNAL(delay_changed(int)),
                      &engine, SLOT(setDelay(int)));
 
-
-//    //test
-//    QVector<int> topologia =  {4,3,2,1};
-//    Brain Ba(topologia);
-//    Brain Bb(topologia);
-
-//    Brain *c = Ba+Bb;
-
-//    Ba.print();
-//    Ba.info();
-//    std::cout << std::endl;
-//    Bb.print();
-//    Bb.info();
-//    std::cout << "stampa finita" << std::endl;
-//    QVector<float> input = {5.0f,2.0f,1.0f,3.0f};
-//    QVector<float> result = Bb.getOutput(input);
-
-//    std::cout << "risultato size " << result.size() <<std::endl;
-//    //for(int i = 0; i < result.size(); i++)
-//        std::cout << result[0] << " ";
-//    //test
+    //display splash screen
+    for(int i = 0; i <= 4; i++) {
+        a.processEvents();
+        Sleeper::msleep(500);
+    }
 
     w.show();
+    splash.finish(&w);
     a.exec();
 }
 

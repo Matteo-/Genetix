@@ -138,7 +138,7 @@ void AI::resetScore()
 AI* operator+(const AI &a, const AI &b)
 {
     //debug
-    std::cout<<"faccio la + tra in AI\n";
+    //std::cout<<"faccio la + tra in AI\n";
     //debug
     AI *figlio = new AI(*(a.brain) + *(b.brain));
     return figlio;
