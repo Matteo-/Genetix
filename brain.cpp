@@ -8,7 +8,7 @@ int Brain::istanze = 0;
 const float Brain::m_bias = 1.0f;
 const float Brain::weightrandmax = 1.0f; //from -weightra.. to +weighra..
 
-Brain::Brain(const QVector<int> &topology, QObject *parent) : QObject(parent),  m_topology(topology)
+Brain::Brain(const QVector<int> &topology, QObject *parent) : QObject(parent),  m_topology(topology), learning_rate(0.3f)
 {
     //debug
     istanze++;
@@ -116,6 +116,7 @@ QVector<float> Brain::getOutput(const QVector<float> &input) {
   if (input.size() != m_topology[0]) {
     std::cout << "[ERRORE] errato numero di input";
     return out;
+    //TODO try catch
   }
 
   /*
@@ -127,11 +128,17 @@ QVector<float> Brain::getOutput(const QVector<float> &input) {
 
   feedForward();
 
-  for (int val = 0; val < out.size(); val++) {
-    out[out.size()-1-val] = m_neurons[m_neurons.size()-1-val];
-  }
+  //primo neurone di output
+  int first_n_out = m_neurons.size()-m_topology.last();
+  //ritorno il campo di neuroni di output
+  return m_neurons.mid(first_n_out, m_topology.last());
+  //debug controllare che ritorni giusto
 
-  return out;
+//  for (int val = 0; val < out.size(); val++) {
+//    out[out.size()-1-val] = m_neurons[m_neurons.size()-1-val];
+//  }
+
+//  return out;
 
 }
 
@@ -262,6 +269,171 @@ void Brain::backprop(const QVector<float> &out,const QVector<float> &out_expct)
     }
     //std::cout<<"Etot: "<<Etot<<"\n";
 
+    float n_out;
+    float Ersum = 0;
+    int num_n_up;   //numero neuroni del layer superiore
+    int last_l = m_topology.size()-1;      //inizializo a indice ultimo layer
+
+    //mi posiziono sul primo neurone di output
+    int n_index = m_neurons.size()-m_topology[last_l];
+    //inizializzo al primo peso del primo neurone di output
+    int w_index = m_weights.size()-(m_topology[last_l-1]*m_topology[last_l]);
+    QVector<float> Er(m_topology[last_l]); //vettore errori
+    QVector<float> newEr(m_topology[last_l-1]);
+
+    //controllo che non sia cambiato nulla nella rete
+    if( m_neurons.mid(n_index, m_topology[last_l]) != out ) {
+        std::cout<<"[ERRORE] rete cambiata\t\t"<<__FILE__<<__LINE__<<"\n";
+        exit(1); //TODO sostituire con try catch
+    }
+
+//    std::cout<<"[INIT] last_l: "<<last_l<<" n_index: "<<n_index<<
+//               " w_index: "<<w_index<<"\n"; //debug
+
+    for(int l_index = m_topology.size()-1; l_index > 0; l_index--)
+    {
+
+//        std::cout<<"[Layer] "<<l_index<<"\n"; //debug
+
+        /* numero neuroni del prossimo layer*/
+        num_n_up = m_topology[l_index-1];
+
+        //scorro tutti i neuroni dello strato
+        for(int offset = 0; offset < m_topology[l_index]; offset++)
+        {
+            //se sono nello strato di output
+            if(l_index == m_topology.size()-1)
+            {
+//                std::cout<<"\tlayer di output\n"<<
+//                           "\t[STATO] offset: "<<offset<<" n_index: "<<n_index<<
+//                           " w_index: "<<w_index<<"\n"; //debug
+
+
+                //ErrorB = OutputB(1-OutputB)(TargetB – OutputB)
+                Er[offset] = m_neurons[n_index+offset]*(1-m_neurons[n_index+offset])*
+                        (out_expct[offset]-m_neurons[n_index+offset]);
+
+//                std::cout<<"\tErrore: "<<Er[offset]<<"\n"; //debug
+
+                /* aggiorno i pesi */
+                            /* aggiorno l'ofset del peso */
+                updateWeights(w_index+(offset*num_n_up), num_n_up, n_index, Er[offset]);
+            }
+            else
+            {
+
+//                //debug
+//                std::cout<<"\tEr[]: ";
+//                for(int i = 0; i < Er.size(); i++) {
+//                    std::cout<<Er[i]<<" ";
+//                }
+//                std::cout<<"\n";
+//                std::cout<<"\tnewEr[]: ";
+//                for(int i = 0; i < newEr.size(); i++) {
+//                    std::cout<<newEr[i]<<" ";
+//                }
+//                std::cout<<"\n";
+//                //debug
+
+//                std::cout<<"\thidden layer\n"<<
+//                           "\t[STATO] offset: "<<offset<<" n_index: "<<n_index<<
+//                           " w_index: "<<w_index<<"\n"; //debug
+
+                //calcolo il nuovo errore
+                //δA = outA(1 – outA)(δαWAα+δβWAβ)
+                n_out = m_neurons[n_index+offset];
+                for(int e = 0; e < Er.size(); e++)
+                {
+                    Ersum += Er[e]*m_weights[w_index+offset+(e*m_neurons[l_index+1])];
+
+//                    std::cout<<"\t\tErsum: "<<Ersum<<" Er[e]: "<<Er[e]<<" e: "<<e<<
+//                               " m_weights[calc]: "<<
+//                               m_weights[w_index+offset+(e*m_neurons[l_index+1])]<<"\n";
+                }
+                newEr[offset] = n_out * (1- n_out)*Ersum;
+
+//                std::cout<<"\tErrore: "<<newEr[offset]<<"\n"; //debug
+
+                /* aggiorno i pesi */
+                            /* aggiorno l'ofset del peso */
+                updateWeights(w_index+(offset*num_n_up), num_n_up, n_index,
+                              newEr[offset]);
+
+            }
+
+
+        }
+
+        if(l_index != m_topology.size()-1)
+        {
+            //il nuvo errore diventa quello vecchio
+            //e costruisco il nuovo vettore di errori
+            Er = newEr;
+            newEr.resize(m_topology[l_index-1]);
+        }
+
+        //aggiorno l'indice del primo neurone
+        //sottraendo la quantita di neuroni presenti nello strato
+        n_index -= m_topology[l_index-1];
+
+        if(l_index >= 2) {
+            //aggiorno l'indice del primo peso
+            w_index -= (m_topology[l_index-2]*m_topology[l_index-1]);
+        }
+        else { break; }
+    }
+}
+
+//void Brain::ErrorPropagation(int n_index, int w_index, Qvector<float> &Er, int l_index)
+//{
+//    QVector<float> newEr(m_topology[l_index]);
+//    float n_out;
+//    float Ersum = 0;
+
+//    if(l_index)
+//    {
+//        //scorro i neuroni del layer l_index
+//        for(int offset = 0; offset < m_topology(l_index); offset++)
+//        {
+//            //calcolo il nuovo errore
+//            //δA = outA(1 – outA)(δαWAα+δβWAβ)
+//            n_out = m_neurons[n_index+offset];
+//            for(int e = 0; e < Er.size(); e++)
+//            {
+//                Ersum += Er[e]*m_weights[w_index+offset+(e*m_neurons[l_index+1])];
+//            }
+//            newEr[offset] = n_out * (1- n_out)*Ersum;
+
+//            /* aggiorno i pesi */
+//            num_n_up = m_topology[l_index-1];
+//                        /* aggiorno l'ofset del peso */
+//            updateWeights(w_index+(i*num_n_up), num_n_up, n_index, Er[offset]);
+//        }
+//    }
+//}
+
+/**
+ * @brief Brain::updateWeights aggiorna i pesi del neurone
+ * @param w_index
+ * @param dim
+ * @param n_index
+ */
+void Brain::updateWeights(int w_index, int dim, int n_index, float Er)
+{
+    float n_out;
+    //scorro i pesi del neurone
+    for(int offset = 0; offset < dim; offset++)
+    {
+        /* tovo il valore di output del neurone da cui arriva il segnale
+         * sottraendo all'indice del primo neurone del layer il numero di
+         * neuroni del layer preedente
+         */
+        n_out = m_neurons[n_index-dim+offset];
+
+        /* aggiorno i pesi */
+        m_weights[w_index+offset] = m_weights[w_index+offset] +
+                (Er * learning_rate * n_out);
+    }
 }
 
 float Brain::squaredError(float t, float y) const

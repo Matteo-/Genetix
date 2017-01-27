@@ -11,7 +11,7 @@ int Engine::istanze = 0;
 const float Engine::score_vittoria = 10.0f;
 const float Engine::score_pareggio = 5.0f;
 const float Engine::score_mossa_valida = 0.1f;
-const QVector<int> Engine::topologia = {18,400,6};
+const QVector<int> Engine::topologia = {18,15,10,6};
 
 /**
  * @brief costruttore
@@ -21,9 +21,9 @@ Engine::Engine() :
     run_flag(false),
     delay_gen(1),
     delay_partita(50),
-    numPlayers(30),
-    p_crossover(0.8f),
-    p_selezione(0.5f),
+    numPlayers(5),
+    p_crossover(0.4f),
+    p_selezione(0.6f),
     i(0),j(0),n(0),
     partita(new Game(this)),
     players(numPlayers),

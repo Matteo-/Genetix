@@ -70,54 +70,54 @@ int AI::calcolaMossa(const Table &table, int turno) const
         //std::cout<<"MOSSA "<<turno<<" ESEGUITA"<<std::endl;//debug
         //t.stampa(); //debug
         //std::cout<<"STIMA: ";
-        indice = maxValueOf(result);
+//        indice = maxValueOf(result);
         //std::cout<<std::endl;   //debug
 
         //implementazione con backprop
-//        mosse = table.mosseValide(turno);
+        mosse = table.mosseValide(turno);
         //se la mossa non è valida insegna a non farla
-//        if( mosse.indexOf(indice) == -1)
-//        {
-//            int iter = 0;
-//            QVector<float> expect(result.size());
-//            do
-//            {
-//                iter++;
-//                //creo l'output desiderato
-//                for(int i = 0; i < expect.size(); i++)
-//                {
-//                    //se è una mossa valida copio il valore di output
-//                    //per avere un errore di 0
-//                    //altrimenti meto il valore 0 per avere un errore alto
-//                    if(mosse.indexOf(i) == -1)
-//                    {
-//                        expect[i] = 0;
-//                    }
-//                    else
-//                    {
-//                        expect[i] = result[i];
-//                    }
-//                }
-//                //aggiorno la rete
-//                brain->backprop(result, expect);
-//                //stabilisco la nuova mossa
-//                result = brain->getOutput(in);
-//                indice = maxValueOf(result);
+        if( mosse.indexOf(indice) == -1)
+        {
+            int iter = 0;
+            QVector<float> expect(result.size());
+            do
+            {
+                iter++;
+                //creo l'output desiderato
+                for(int i = 0; i < expect.size(); i++)
+                {
+                    //se è una mossa valida copio il valore di output
+                    //per avere un errore di 0
+                    //altrimenti meto il valore 0 per avere un errore alto
+                    if(mosse.indexOf(i) == -1)
+                    {
+                        expect[i] = 0;
+                    }
+                    else
+                    {
+                        expect[i] = result[i];
+                    }
+                }
+                //aggiorno la rete
+                brain->backprop(result, expect);
+                //stabilisco la nuova mossa
+                result = brain->getOutput(in);
+                indice = maxValueOf(result);
 
-//            }while( mosse.indexOf(indice) == -1 && iter <= max_iter_backprop);
+            }while( mosse.indexOf(indice) == -1 && iter <= max_iter_backprop);
 
-//            return indice;
-//        }
-//        else
-//        {
-//            //debug
-//        //    brain->print();
-//        //    std::cout<<"INDICE "<<indice<<std::endl;
-//        //    getchar();
-//            //debug
-//            return indice;
-//        }
-        return indice;
+            return indice;
+        }
+        else
+        {
+            //debug
+        //    brain->print();
+        //    std::cout<<"INDICE "<<indice<<std::endl;
+        //    getchar();
+            //debug
+            return indice;
+        }
+//        return indice;
 }
 
 float AI::getScore() const

@@ -23,6 +23,8 @@ public:
 private:
     void feedForward();
     float squaredError(float t, float y) const;
+    void updateWeights(int w_index, int dim, int n_index, float Er);
+    void ErrorPropagation(float Er, int l_index);
 
     QVector<int> m_topology;
     QVector<float> m_neurons;
@@ -33,6 +35,7 @@ private:
     //TODO inizializzare e fare funzioni di modifica
     //float eta;
     //float momentum;
+    float learning_rate;
     static int istanze;                    //debug memory leak
 
 signals:
