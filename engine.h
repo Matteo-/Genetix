@@ -46,7 +46,8 @@ signals:
 private:
     static bool compare(const PlayerPtr, const PlayerPtr);
     void selezioneTorneo(float p);
-    PlayerPtr crossover(PlayerPtr, PlayerPtr, float p) const;
+    PlayerPtr crossover(PlayerPtr, PlayerPtr, float p);
+    void fitness(PlayerPtr p0, PlayerPtr p1);
     float fitnessAVG() const;
     int generation;
     bool run_flag;                          //controllo
@@ -61,6 +62,7 @@ private:
     PlayerPtr best;
     static const float score_vittoria;
     static const float score_pareggio;
+    static const float score_sconfitta;
     static const float score_mossa_valida;
     static const QVector<int> topologia;
     static int istanze;                    //debug memory leak

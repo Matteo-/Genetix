@@ -32,7 +32,7 @@ inline std::ostream& operator<< (std::ostream& out, const stat& s)
     out << "* Vittorie:... " << s.win << "\n";
     out << "* Sconfitte:..." << s.lose << "\n";
     out << "* Pareggiate:... " << s.parity << "\n";
-    out << "strategia:... ";
+    out << "* strategia:... ";
     for(int i = 0; i < s.strategy.size(); i++) { out << s.strategy[i] << " "; }
     out << "\n";
     out << "*********************************\n";

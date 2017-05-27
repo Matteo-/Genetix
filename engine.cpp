@@ -6,12 +6,14 @@
 #include <QtAlgorithms>
 #include "sleeper.h"
 #include <math.h>
+using namespace std;
 
 int Engine::istanze = 0;
 const float Engine::score_vittoria = 10.0f;
 const float Engine::score_pareggio = 5.0f;
+const float Engine::score_sconfitta = 0.0f;
 const float Engine::score_mossa_valida = 0.0f;
-const QVector<int> Engine::topologia = {5,2,1};
+const QVector<int> Engine::topologia = {5,1};
 
 /**
  * @brief costruttore
@@ -21,7 +23,7 @@ Engine::Engine() :
     run_flag(false),
     delay_gen(1),
     delay_partita(50),
-    numPlayers(10),
+    numPlayers(3),
     p_crossover(0.4f),
     p_selezione(0.6f),
     i(0),j(0),n(0),
@@ -89,16 +91,7 @@ void Engine::run()
                     std::cout << std::endl <<"GEN "<< generation //debug
                         << " PARTITA NUMERO " << n << " ga "<<
                                  i<<" gb "<<j<<std::endl; //debug
-                    result = partita->run(players[i], players[j], tree);
-                    if(result.size() == 1)
-                    {
-                        result[0].get()->addScore(score_vittoria);
-                    }
-                    if(result.size() == 2)
-                    {
-                        result[0].get()->addScore(score_pareggio);
-                        result[1].get()->addScore(score_pareggio);
-                    }
+                    fitness(players[i], players[j]);
 
                     n++;
                     Sleeper::msleep(delay_partita);
@@ -127,9 +120,6 @@ void Engine::run()
                 std::cout<<"("<<i<<","<<players[i]->getScore()<<") ";
             std::cout<<std::endl;
             //debug
-
-            //ordino in base al punteggio
-            qSort(players.begin(), players.end(), Engine::compare);
 
             //salvo la rete migliore
             PlayerPtr p = players[0];
@@ -202,6 +192,31 @@ bool Engine::compare(const PlayerPtr a, const PlayerPtr b)
     return !( *(a.get()) < *(b.get()) );
 }
 
+void Engine::fitness(PlayerPtr p0, PlayerPtr p1)
+{
+    int result = partita->run(p0, p1, tree);
+
+    switch (result) {
+    case 0:
+        p0.get()->win(score_vittoria);
+        p1.get()->lose(score_sconfitta);
+        cout << "HA VINTO IL GIOCATORE 0" << std::endl; //debug
+        break;
+    case 1:
+        p0.get()->lose(score_sconfitta);
+        p1.get()->win(score_vittoria);
+        cout << "HA VINTO IL GIOCATORE 1" << std::endl; //debug
+        break;
+    case 2:
+        p0.get()->parity(score_pareggio);
+        p0.get()->parity(score_pareggio);
+        cout << "PARITA'" << std::endl; //debug
+        break;
+    default:
+        break;
+    }
+}
+
 /**
  * @brief Engine::fitnessAVG
  * @return il fitness medio della popolazione corrente
@@ -216,77 +231,115 @@ float Engine::fitnessAVG() const
 
 void Engine::selezioneTorneo(float p)
 {
-    QVector<PlayerPtr> sel(0);
-    int prob;
+    QVector<int> sel(players.size());
+    int prob, offset = 0;
 
-    //debug
-//    for(int i = 0; i < players.size(); i++) {
-//        PlayerPtr prova = players[i];
-//        std::cout<<"player "<<i<<" check\n";
-//    }
-    //debug
+    /* ordino in base al punteggio
+     * per ottenere un vettore delle probabilita ordinato
+     * dalla piu alta alla più piccola
+     * questo processo mi aiutera in futuro nella selezione del giocatore
+     */
+    qSort(players.begin(), players.end(), Engine::compare);
 
-    //carico il vettore i selezione
+    cout << "entro ciclo 1..." << flush; //debug
+
+    /*
+     * costruisco il vettore di selezione
+     */
     for(int i = 0; i < players.size(); i++)
     {
         /* resetto gli score per ripartire da 0 con la generazione successiva */
         players[i]->resetScore();
         prob = static_cast<int> (round((p*pow((1-p),i)) * numPlayers * 100))+1;
 
+        /*
+         * construisco sel con la probabilita di ogni giocatore di essere scelto
+         * l'indice di sel rappresenta l'indice del giocatore e
+         * il valore la sua probabilità CUMULATIVA di essere selezionato
+         *
+         * es.
+         *  giocatore 0 prob 50
+         *  giocatore 1 prob 20
+         *  giocatore 2 prob 10
+         *
+         *       0  1  2
+         * sel: 50 70 80
+         *
+         */
+        sel[i] = offset + prob;
+        offset = sel[i];
+
         //debug
-//        using namespace std;
-//        cout<<"Prob " << prob << endl;
+        cout << "[]vettore probabilita:";
+        for (int i = 0; i < sel.size(); i++) cout << " " << sel[i];
+        cout << endl;
         //debug
 
-        //inserisco tanti elementi quanti il numero di probabilita in sel
-        int offset = sel.size();
-        sel.resize(sel.size()+prob);
-        while (prob > 0) {
-            sel[offset++] = players[i];
-            prob--;
-        }
     }
+    cout << "esco ciclo 1\n"; //debug
 
-    //std::cout<<"[elementi in sel] "<<sel.size()<<std::endl; //debug
+    cout << "smadonno forte" << endl; //debug
 
-    //creo la nuova popolazione
-//    for(int i = 0; i < players.size()-1; i++)
-//    {
-//        Player *a = sel[rand() % sel.size()];    //seleziono un individuo  caso
-//        Player *b;
-
-//        //un giocatore non puo accoppiarsi con se stesso
-//        do {
-//            b = sel[rand() % sel.size()];
-//        }while (b == a);
-
-//        //crossover a punto singolo
-//        //(scambio i giocatori per ottenere la combinazione dei 2)
-//        players[i] = crossover(a, b, p_crossover);
-//        players[i+1] = crossover(b, a, p_crossover);
-//    }
-
-    for(int i = (players.size()/2)-1; i < players.size(); i++)
+    cout << "entro ciclo 3..." << flush; //debug
+    printf ("%s \n", "A string");
+    /* ordinando i giocatori per bravura
+     * ottengo che nelle prime posizioni ho individui piu promettenti
+     * che vale la pena tenere
+     * quindi decido di evolvere solo metà della popolazione
+     * e avere cosi la possibilita di superare massimi locali
+     */
+    for(int i = (players.size()/2); i < players.size(); i++)
     {
-        int idx = rand() % sel.size();
-        PlayerPtr a = sel[idx];//seleziono un individuo a caso
-        //debug
-//        using namespace std;
-//        cout << "Indice A "<<idx;
-        //debug
-        PlayerPtr b;
+        QVector<int> sim_sel = sel;
+        PlayerPtr father, mother;
+        /* ottengo un numero "gettone" random tra 0 e il valore di sel piu alto
+         * e lo utilizzo per selezionare il padre
+         */
+        int coin = rand() % sel.last();
 
-        //un giocatore non può accoppiarsi con se stesso
+        for(int i = 0; i < sim_sel.size(); i++)
+        {
+            /* se il gettone è minore del valore di probabilita dell'array
+             * scorrendolo in maniera ordinata
+             * allora l'indice è l'indice del giocatore selezionato
+             */
+            if(coin < sim_sel[i])
+            {
+                father = players[i];
+
+                /* impedisco che possa venire selezionato di nuovo */
+                sim_sel[i] = 0;
+                break;
+            }
+        }
+
+        cout << "entro ciclo 4..." << flush; //debug
+
+        /* ora devo selezionare la madre
+         * con la stessa logica usata per il padre
+         */
+        bool done = false;
         do {
-            idx = rand() % sel.size();
-            b = sel[idx];
-        }while (b == a);
+            coin = rand() % sel.last();
+            for(int i = 0; i < sim_sel.size(); i++)
+            {
+                if(coin < sim_sel[i])
+                {
+                    mother = players[i];
+                    done = true;
+                    break;
+                }
+            }
+        }while (!done);
+
         //debug
+            cout << "esco ciclo 4\n"; //debug
 //        cout << " Indice B "<<idx<<endl;
 //        cout<<"rimuovo l'AI "<<i<<"\t\t"<<__FILE__<<":"<<__LINE__<<"\n";
         //debug
-        players[i] = crossover(a, b, p_crossover);
+        players[i] = crossover(father, mother, p_crossover);
     }
+    cout << "esco ciclo 3\n"; //debug
 
 }
 
@@ -297,7 +350,7 @@ void Engine::selezioneTorneo(float p)
  * @param p
  * @return figlio con meta dei geni del padre e meta dei geni della madre
  */
-PlayerPtr Engine::crossover(PlayerPtr a, PlayerPtr b, float p) const
+PlayerPtr Engine::crossover(PlayerPtr a, PlayerPtr b, float p)
 {
     std::cout<<std::endl<<"[FACCIO IL CROSSOVER] "<<std::endl; //debug
     //AI *ai = dynamic_cast<AI*>(a.get());

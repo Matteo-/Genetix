@@ -40,8 +40,15 @@ Game::~Game()
     //debug
 }
 
-//ritornare il  numero di giocatore (ricordarsi pareggio)
-QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2, Tree *tree)
+/*
+ * metodo che si occupa di effettuare la partita tra 2 giocatori
+ * @input giocatore 0 e giocatore 1
+ * @output 0 se ha vinto il giocatore 0
+ *         1 se ha vinto il giocatore 1
+ *         2 in caso di parità
+ *        -1 se c'è stato un errore
+ */
+int Game::run(PlayerPtr g1, PlayerPtr g2, Tree *tree)
 {
     QVector<data*> *id; //game vector in tree
     if(tree)
@@ -61,7 +68,7 @@ QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2, Tree *tree)
     bantumi.inizializza();
     turno = turno_iniziale;
 
-    int mossa, controllo, stato_finale;
+    int mossa, controllo;
 
     while(!bantumi.fineGioco() && engine_control)
     {
@@ -72,7 +79,7 @@ QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2, Tree *tree)
             mossa = giocatori[turno]->calcolaMossa(bantumi, turno);
             controllo = bantumi.eseguiMossa(turno, mossa);
 
-            cout << turno << mossa << controllo << " "; //debug
+            cout << turno << mossa << controllo << " " << flush; //debug
 
             if(tree)
             {
@@ -109,26 +116,11 @@ QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2, Tree *tree)
 
     if(!engine_control)
     {
-        giocatori.resize(0);
-        return giocatori;
+        return -1;
     }
-
-    stato_finale = bantumi.calcolaVincitore();
-    if (stato_finale == 2)
-    {
-        cout << "PARITA'" << std::endl; //debug
-        //emit pareggio(giocatori[0], giocatori[1]);
-        return giocatori;
+    else {
+        return bantumi.calcolaVincitore();
     }
-    else
-    {
-        cout << "HA VINTO IL GIOCATORE " << stato_finale << std::endl; //debug
-        //rimuovo il giocatore perdente
-        giocatori.remove(Table::rival(stato_finale));
-        //emit vittoria(giocatori[0]);
-        return giocatori;
-    }
-
 }
 
 void Game::stop()
