@@ -11,7 +11,11 @@ public:
     AI(Brain *b);
     ~AI();
     int calcolaMossa(const Table &table, int turno) const;
-    void addScore(int s);
+    void addScore(float s);
+    void win(float s);
+    void lose(float s);
+    void parity(float s);
+    stat statistics();
     float getScore() const;
     void resetScore();
     bool operator<(const Player &) const;
@@ -23,7 +27,9 @@ public:
     static int maxValueOf(const QVector<float> v);
 
 private:
-    int score;
+    float alphabeta(Table table, int mossa, int turno, int player, float a, float b, int depth) const;
+    static int max_depth;
+    stat statistics_;
     Brain *brain;
     static int max_iter_backprop;
     static int istanze;                    //debug memory leak

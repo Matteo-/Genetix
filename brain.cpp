@@ -7,6 +7,7 @@
 int Brain::istanze = 0;
 const float Brain::m_bias = 1.0f;
 const float Brain::weightrandmax = 1.0f; //from -weightra.. to +weighra..
+float Brain::mutation_prob = 0.015f;
 
 Brain::Brain(const QVector<int> &topology, QObject *parent) : QObject(parent),  m_topology(topology), learning_rate(0.3f)
 {
@@ -187,8 +188,6 @@ Brain* operator+(const Brain &a, const Brain &b)
 //    b.info();
     //debug
 
-    float prob = 0.015f;
-
     if(a.m_topology != b.m_topology)
     {
         std::cout<<"[ERRORE TOPOLOGIA DIVERSA]\n"; //debug
@@ -197,13 +196,12 @@ Brain* operator+(const Brain &a, const Brain &b)
     else
     {
         Brain *figlio = new Brain(a.m_topology);
-        int middle = a.m_weights.size()/2;
+        int middle = a.m_weights.size()/Brain::randTo(2.0f, 5.0f); //provo con randTo (prima era 2)
 
 //        std::cout<<"middle: "<<middle<<"\n"; //debug
 
-        QVector<float> mid_a = a.m_weights.mid(0,middle);
-        QVector<float> mid_b = b.m_weights.mid(middle,
-                                               b.m_weights.size()-1);
+        QVector<float> mid_a = a.m_weights.mid(0, middle);
+        QVector<float> mid_b = b.m_weights.mid(middle, b.m_weights.size()-1);
 
         //debug
 //        std::cout<<"size a: "<<mid_a.size()<<"size b: "<<mid_b.size()<<
@@ -213,7 +211,7 @@ Brain* operator+(const Brain &a, const Brain &b)
         //mutazioni
         for (int i = 0; i < mid_a.size(); i++)
         {
-            if(Brain::randTo(0, 1.0f) <= prob)
+            if(Brain::randTo(0, 1.0f) <= Brain::mutation_prob)
             {
                 //std::cout<<"MUTAZIONE AVVENUTA"<<std::endl; //debug
                 mid_a[i] = Brain::randTo(-Brain::weightrandmax,
@@ -223,7 +221,7 @@ Brain* operator+(const Brain &a, const Brain &b)
         }
         for (int i = 0; i < mid_b.size(); i++)
         {
-            if(Brain::randTo(0, 1.0f) <= prob)
+            if(Brain::randTo(0, 1.0f) <= Brain::mutation_prob)
             {
                 //std::cout<<"MUTAZIONE AVVENUTA"<<std::endl; //debug
                 mid_b[i] = Brain::randTo(-Brain::weightrandmax,
@@ -232,7 +230,7 @@ Brain* operator+(const Brain &a, const Brain &b)
             }
         }
 
-        figlio->m_weights = mid_a + mid_b;
+//        figlio->m_weights = mid_a + mid_b;
         return figlio;
     }
 }
@@ -384,34 +382,6 @@ void Brain::backprop(const QVector<float> &out,const QVector<float> &out_expct)
     }
 }
 
-//void Brain::ErrorPropagation(int n_index, int w_index, Qvector<float> &Er, int l_index)
-//{
-//    QVector<float> newEr(m_topology[l_index]);
-//    float n_out;
-//    float Ersum = 0;
-
-//    if(l_index)
-//    {
-//        //scorro i neuroni del layer l_index
-//        for(int offset = 0; offset < m_topology(l_index); offset++)
-//        {
-//            //calcolo il nuovo errore
-//            //δA = outA(1 – outA)(δαWAα+δβWAβ)
-//            n_out = m_neurons[n_index+offset];
-//            for(int e = 0; e < Er.size(); e++)
-//            {
-//                Ersum += Er[e]*m_weights[w_index+offset+(e*m_neurons[l_index+1])];
-//            }
-//            newEr[offset] = n_out * (1- n_out)*Ersum;
-
-//            /* aggiorno i pesi */
-//            num_n_up = m_topology[l_index-1];
-//                        /* aggiorno l'ofset del peso */
-//            updateWeights(w_index+(i*num_n_up), num_n_up, n_index, Er[offset]);
-//        }
-//    }
-//}
-
 /**
  * @brief Brain::updateWeights aggiorna i pesi del neurone
  * @param w_index
@@ -440,4 +410,9 @@ float Brain::squaredError(float t, float y) const
 {
     float learning_rate = 1.0f; //TODO posibilità di modificarla
     return 0.5f * pow((t - y),2) * learning_rate;
+}
+
+QVector<float> Brain::getWeights()
+{
+    return m_weights;
 }

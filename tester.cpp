@@ -3,7 +3,7 @@
 
 int Tester::istanze = 0;
 
-Tester::Tester(): score(0)
+Tester::Tester(): statistics_()
 {
     //debug
     istanze++;
@@ -48,22 +48,22 @@ int Tester::calcolaMossa(const Table &table, int turno) const
 }
 
 
-void Tester::addScore(int s)
+void Tester::addScore(float s)
 {
-    score += s;
+    statistics_.score += s;
 }
 
 bool Tester::operator<(const Player &p) const
 {
-    return score < p.getScore();
+    return statistics_.score < p.getScore();
 }
 
 float Tester::getScore() const
 {
-    return score;
+    return statistics_.score;
 }
 
 void Tester::resetScore()
 {
-    score = 0;
+    statistics_ = stat();
 }

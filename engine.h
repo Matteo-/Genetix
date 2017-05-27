@@ -10,8 +10,10 @@
 #include "table.h"
 #include "umano.h"
 #include "ai.h"
+#include "random.h"
 #include "gameabstract.h"
 #include "tester.h"
+#include "tree.h"
 
 class Game;
 
@@ -62,6 +64,7 @@ private:
     static const float score_mossa_valida;
     static const QVector<int> topologia;
     static int istanze;                    //debug memory leak
+    Tree *tree;
 };
 
 #endif // ENGINE_H

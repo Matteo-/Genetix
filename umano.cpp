@@ -4,7 +4,7 @@ using namespace std;
 
 int Umano::istanze = 0;
 
-Umano::Umano(): score(0)
+Umano::Umano(): statistics_()
 {
     //debug
     istanze++;
@@ -30,22 +30,22 @@ int Umano::calcolaMossa(const Table &table, int turno) const
     return mossa;
 }
 
-void Umano::addScore(int s)
+void Umano::addScore(float s)
 {
-    score += s;
+    statistics_.score += s;
 }
 
 float Umano::getScore() const
 {
-    return score;
+    return statistics_.score;
 }
 
 bool Umano::operator<(const Player &a) const
 {
-    return score < a.getScore();
+    return statistics_.score < a.getScore();
 }
 
 void Umano::resetScore()
 {
-    score = 0;
+    statistics_ = stat();
 }

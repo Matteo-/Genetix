@@ -9,6 +9,9 @@
 #include <iostream> //debug
 #include <stdio.h> //test
 #include <QThread>
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
+#include "tree.h"
 
 class T : public QThread
 {
@@ -48,25 +51,41 @@ int main(int argc, char *argv[])
         Sleeper::msleep(500);
     }
 
+    srand (time(NULL));
+
+//    Tree tree;
+
+//    int p;
+//    std::cin >> p;
+//    for(int i = 0; i < p; i++) {
+//    Game prova;
+//    prova.run(PlayerPtr(new AI(new Brain({5,1}))),
+//              PlayerPtr(new AI(new Brain({5,1}))), &tree);
+//    }
+
+//    tree.stampa();
+
+
+
 
     //test
-    std::cout<<"INIZIO TEST\n";
-    float output;
-    Brain b({1,2,3,4,1});
-    b.info();
-    b.print();
-    output = b.getOutput({5})[0];
-    std::cout<<"OUTPUT: "<<output<<"\n";
-    b.info();
-    b.print();
-    b.backprop({output}, {1});
-    std::cout<<"BACKPROP\n";
-    b.info();
-    b.print();
-    output = b.getOutput({5})[0];
-    std::cout<<"OUTPUT: "<<output<<"\n";
-    std::cout<<"FINE TEST\n";
-    getchar();
+//    std::cout<<"INIZIO TEST\n";
+//    float output;
+//    Brain b({1,2,3,4,1});
+//    b.info();
+//    b.print();
+//    output = b.getOutput({5})[0];
+//    std::cout<<"OUTPUT: "<<output<<"\n";
+//    b.info();
+//    b.print();
+//    b.backprop({output}, {1});
+//    std::cout<<"BACKPROP\n";
+//    b.info();
+//    b.print();
+//    output = b.getOutput({5})[0];
+//    std::cout<<"OUTPUT: "<<output<<"\n";
+//    std::cout<<"FINE TEST\n";
+//    getchar();
     //test
 
     w.show();

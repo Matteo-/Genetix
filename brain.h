@@ -18,6 +18,7 @@ public:
     //void test();
     void print() const;
     void info() const;
+    QVector<float> getWeights();
     static float randTo(float min, float max);
 
 private:
@@ -37,6 +38,7 @@ private:
     //float momentum;
     float learning_rate;
     static int istanze;                    //debug memory leak
+    static float mutation_prob;
 
 signals:
 

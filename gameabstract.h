@@ -3,12 +3,13 @@
 
 #include <QObject>
 #include "player.h"
+#include "tree.h"
 
 class GameAbstract : public QObject
 {
     //Q_OBJECT
 public:
-    virtual QVector<PlayerPtr> run(PlayerPtr g1, PlayerPtr g2) = 0;
+    virtual QVector<PlayerPtr> run(PlayerPtr g1, PlayerPtr g2, Tree *) = 0;
     virtual ~GameAbstract() {}
 protected:
 

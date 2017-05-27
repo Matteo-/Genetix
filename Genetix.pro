@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     brain.cpp \
     sleeper.cpp \
     tester.cpp \
-    style.cpp
+    style.cpp \
+    tree.cpp \
+    random.cpp
 
 HEADERS  += mainwindow.h \
     umano.h \
@@ -35,7 +37,9 @@ HEADERS  += mainwindow.h \
     gameabstract.h \
     sleeper.h \
     tester.h \
-    style.h
+    style.h \
+    tree.h \
+    random.h
 
 FORMS    += mainwindow.ui
 

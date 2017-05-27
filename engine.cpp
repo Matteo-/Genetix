@@ -10,8 +10,8 @@
 int Engine::istanze = 0;
 const float Engine::score_vittoria = 10.0f;
 const float Engine::score_pareggio = 5.0f;
-const float Engine::score_mossa_valida = 0.1f;
-const QVector<int> Engine::topologia = {18,15,10,6};
+const float Engine::score_mossa_valida = 0.0f;
+const QVector<int> Engine::topologia = {5,2,1};
 
 /**
  * @brief costruttore
@@ -21,13 +21,14 @@ Engine::Engine() :
     run_flag(false),
     delay_gen(1),
     delay_partita(50),
-    numPlayers(5),
+    numPlayers(10),
     p_crossover(0.4f),
     p_selezione(0.6f),
     i(0),j(0),n(0),
     partita(new Game(this)),
     players(numPlayers),
-    best(nullptr)
+    best(nullptr),
+    tree(NULL)
 {
     //debug
     istanze++;
@@ -71,6 +72,7 @@ Engine::~Engine()
 void Engine::run()
 {
     run_flag = true;
+    QVector<PlayerPtr> result;
 
     while (run_flag)    //ciclo principale
     {
@@ -87,7 +89,17 @@ void Engine::run()
                     std::cout << std::endl <<"GEN "<< generation //debug
                         << " PARTITA NUMERO " << n << " ga "<<
                                  i<<" gb "<<j<<std::endl; //debug
-                    partita->run(players[i], players[j]);
+                    result = partita->run(players[i], players[j], tree);
+                    if(result.size() == 1)
+                    {
+                        result[0].get()->addScore(score_vittoria);
+                    }
+                    if(result.size() == 2)
+                    {
+                        result[0].get()->addScore(score_pareggio);
+                        result[1].get()->addScore(score_pareggio);
+                    }
+
                     n++;
                     Sleeper::msleep(delay_partita);
                 }
@@ -109,8 +121,6 @@ void Engine::run()
         {
             i = 0, j = 0, n = 0;             //resetto lo stato
 
-            //ordino in base al punteggio
-            qSort(players.begin(), players.end(), Engine::compare);
 
             //debug stampo i punteggi
             for(int i = 0; i < numPlayers; i++)
@@ -118,10 +128,16 @@ void Engine::run()
             std::cout<<std::endl;
             //debug
 
+            //ordino in base al punteggio
+            qSort(players.begin(), players.end(), Engine::compare);
+
             //salvo la rete migliore
             PlayerPtr p = players[0];
             if(best == nullptr || best->getScore() < p->getScore())
+            {
                 best = p;
+                std::cout << best->statistics();
+            }
 
             selezioneTorneo(p_selezione);
 
@@ -179,6 +195,7 @@ void Engine::pareggio(PlayerPtr p1, PlayerPtr p2)
 }
 
 // funzione per algoritmo di sort
+//TODO rifare con overloading operator<
 bool Engine::compare(const PlayerPtr a, const PlayerPtr b)
 {
     // nego per ottenere l'ordine decrescente

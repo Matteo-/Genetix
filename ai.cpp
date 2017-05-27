@@ -2,29 +2,45 @@
 #include <iostream>
 #include <QVector>
 #include <cstdio> //debug
+#include <algorithm> //min e max
+using namespace std;
+
+struct eval {
+    int mossa;
+    float v;
+
+    bool operator<(const eval& r) const
+    {
+        return v < r.v;
+    }
+};
 
 int AI::max_iter_backprop = 500;
 int AI::istanze = 0;
+int AI::max_depth = 7;
 
-AI::AI(Brain *b): score(0), brain(b)
+AI::AI(Brain *b): brain(b)
 {
     //debug
     istanze++;
-    std::cout<<"creating AI ["<<istanze<<"]....OK\n";
+    cout<<"creating AI ["<<istanze<<"]....OK\n";
     //debug
-//    std::cout << std::endl; //debug
+//    cout << std::endl; //debug
 //    brain->info();  //debug
 //    brain->print(); //debug
-//    std::cout << std::endl; //debug
+//    cout << std::endl; //debug
+
+    QVector<float> w = brain->getWeights();
+    statistics_ = stat(&w);
 }
 
 AI::~AI()
 {
     delete brain;
     //debug
-    std::cout<<"deleting AI ["<<istanze<<"]....";   //debug
+    cout<<"deleting AI ["<<istanze<<"]....";   //debug
     istanze--;
-    std::cout<<"OK\n";
+    cout<<"OK\n";
     //debug
 }
 
@@ -36,109 +52,149 @@ AI::~AI()
  */
 int AI::calcolaMossa(const Table &table, int turno) const
 {
-    QVector<int> mosse;
-    //float stima_max;// = -10000.0f;//, stima; //valore piccolo fuori scala
-    //int indice = 0;
-    QVector<float> result;
-    //parametri di valutazione per la rete neurale
-    float diff_punti,zero_my,zero_vs;
-    int indice;
+    //creo il vettore delle mosse valide per il mio turno
+    QVector<int> mosse = table.mosseValide(turno);
+    //creo un vettore contenente la valutazione fatta per ogni mossa
+    QVector<float> value(mosse.size(), 0.0f);
 
-    mosse = table.mosseValide(turno);
-    //for(int i = 0; i < mosse.size(); i++)
-    //{
-        //creo un tavolo virtuale
-        //Table t(table);
-        //std::cout << "TAVOLO INIZIALE" << std::endl;    //debug
-        //t.stampa(); //debug
-        //eseguo la mossa
-        diff_punti = static_cast <float> (table.differenzaPunti(turno));
-        zero_my = static_cast <float> (table.bucheVuote(turno));
-        zero_vs = static_cast <float> (table.bucheVuote(Table::rival(turno)));
+    for(int i = 0; i < value.size(); i++)
+    {
+        value[i] = alphabeta(table, mosse[i],
+                             turno, turno, -2000.0f, 2000.0f, max_depth);
+    }
 
-        //prova a passargli il tavolo
+    int i_max = maxValueOf(value);
+
+//    brain->print(); //debug
+//    brain->info();  //debug
+
+    return mosse[i_max];
+}
+
+float AI::alphabeta(Table table,int mossa, int turno, int player, float a, float b, int depth) const {
+    //il tavolo è passato per valore quindi posso simulare le mosse
+    int state = table.eseguiMossa(turno,mossa);
+
+    if(depth == 0 || table.fineGioco()) {
+        /*sono arrivato alla fine e quindi eseguo la valutazione del tavolo
+         * la rete prende in input i seguenti valori:
+         * - differenza punti
+         * - numero delle proprie buche vuote
+         * - numero buche vuote avversario
+         * - turno bonus?
+         * - vittoria o no
+         */
         QVector<float> in;
-        QVector<int> tmp = table.get()[0]+table.get()[1];
-        for(int i = 0; i < tmp.size(); i++)
-            in.append(static_cast <float> (tmp[i]/10.f));
-        in.append(static_cast <float> (turno));
-        in.append(diff_punti/10);
-        in.append(zero_my/10);
-        in.append(-zero_vs/10);
-        result = brain->getOutput(in);
+        in.append(table.differenzaPunti(turno));
+        in.append(table.bucheVuote(turno));
+        in.append(table.bucheVuote(Table::rival(turno)));
+        in.append(state);
 
-        //std::cout<<"MOSSA "<<turno<<" ESEGUITA"<<std::endl;//debug
-        //t.stampa(); //debug
-        //std::cout<<"STIMA: ";
-//        indice = maxValueOf(result);
-        //std::cout<<std::endl;   //debug
-
-        //implementazione con backprop
-        mosse = table.mosseValide(turno);
-        //se la mossa non è valida insegna a non farla
-        if( mosse.indexOf(indice) == -1)
+        if(table.fineGioco())
         {
-            int iter = 0;
-            QVector<float> expect(result.size());
-            do
-            {
-                iter++;
-                //creo l'output desiderato
-                for(int i = 0; i < expect.size(); i++)
-                {
-                    //se è una mossa valida copio il valore di output
-                    //per avere un errore di 0
-                    //altrimenti meto il valore 0 per avere un errore alto
-                    if(mosse.indexOf(i) == -1)
-                    {
-                        expect[i] = 0;
-                    }
-                    else
-                    {
-                        expect[i] = result[i];
-                    }
-                }
-                //aggiorno la rete
-                brain->backprop(result, expect);
-                //stabilisco la nuova mossa
-                result = brain->getOutput(in);
-                indice = maxValueOf(result);
-
-            }while( mosse.indexOf(indice) == -1 && iter <= max_iter_backprop);
-
-            return indice;
+            int winner = table.calcolaVincitore();
+            if(winner == player) { in.append(1); }
+            if(winner == Table::rival(player)) { in.append(-1); }
+            if(winner == 2) { in.append(0); }
         }
         else
         {
-            //debug
-        //    brain->print();
-        //    std::cout<<"INDICE "<<indice<<std::endl;
-        //    getchar();
-            //debug
-            return indice;
+            in.append(0);
         }
-//        return indice;
+        return brain->getOutput(in).first();
+    }
+    else
+    {
+        //creo il vettore delle mosse valide per il mio turno
+        int next_turn = (state) ? turno : Table::rival(turno);
+
+        /*
+         * nell' alpha beta pruning è importante osservare per prime
+         * le mosse valutate migliori a una prima stima
+         * in modo da effettuare tagli il prima possibile per velocizzare la ricerca
+         */
+        QVector<int> mosse = table.mosseValide(next_turn);
+        QVector<eval> s(mosse.size());
+        for(int i = 0; i < mosse.size(); i++)
+        {
+            s[i].mossa = mosse[i];
+            s[i].v = alphabeta(table,mosse[i],turno,player,a,b,0);
+        }
+        qSort(s);
+        reverse(s.begin(), s.end());
+
+        //massimizzo se il turno è mio
+        if(turno == player)
+        {
+            float v = -2000.0f; // -infinito
+            for(int i = 0; i < s.size(); i++)
+            {
+                v = max(v, alphabeta(table, s[i].mossa, next_turn, player,
+                                            a, b, depth-1));
+                a = max(a, v);
+                if(b <= a) { break; }
+            }
+            return v;
+        }
+        else
+        {
+            float v = 2000.0f; // + infinito
+            for(int i = 0; i < mosse.size(); i++)
+            {
+                v = min(v, alphabeta(table, s[i].mossa, next_turn, player,
+                                            a, b, depth-1));
+                b = min(b, v);
+                if(b <= a) { break; }
+            }
+            return v;
+        }
+    }
+
 }
 
 float AI::getScore() const
 {
-    return score;
+    return statistics_.score;
 }
 
-void AI::addScore(int s)
+void AI::addScore(float s)
 {
-    score += s;
+    statistics_.score += s;
 }
 
 void AI::resetScore()
 {
-    score = 0;
+    QVector<float> w = brain->getWeights();
+    statistics_ = stat(&w);
+}
+
+void AI::win(float s)
+{
+    addScore(s);
+    statistics_.win++;
+}
+
+void AI::lose(float s)
+{
+    addScore(s);
+    statistics_.lose++;
+}
+
+void AI::parity(float s)
+{
+    addScore(s);
+    statistics_.parity++;
+}
+
+stat AI::statistics()
+{
+    return statistics_;
 }
 
 AI* operator+(const AI &a, const AI &b)
 {
     //debug
-    //std::cout<<"faccio la + tra in AI\n";
+    //cout<<"faccio la + tra in AI\n";
     //debug
     AI *figlio = new AI(*(a.brain) + *(b.brain));
     return figlio;
@@ -146,40 +202,44 @@ AI* operator+(const AI &a, const AI &b)
 
 bool AI::operator<(const Player &a) const
 {
-    return score < a.getScore();
+    return statistics_.score < a.getScore();
 }
 
 bool operator<(const AI &a, const AI &b)
 {
-    if (a.score < b.score) return true;
+    if (a.getScore() < b.getScore()) return true;
     else return false;
 }
 
 bool operator>(const AI &a, const AI &b)
 {
-    if (a.score > b.score) return true;
+    if (a.getScore() > b.getScore()) return true;
     else return false;
 }
 
 bool operator>=(const AI &a, const AI &b)
 {
-    if (a.score >= b.score) return true;
+    if (a.getScore() >= b.getScore()) return true;
     else return false;
 }
 
 bool operator<=(const AI &a, const AI &b)
 {
-    if (a.score <= b.score) return true;
+    if (a.getScore() <= b.getScore()) return true;
     else return false;
 }
 
+/*
+ * ritorna l'indice dell'elemento maggiore
+ * -1 se vettore vuoto
+ */
 int AI::maxValueOf(const QVector<float> v)
 {
     if(v.size() > 0)
     {
-        int indice = v[0];
+        int indice = 0;
         float stima_max = v[indice];
-        for(int i = 0; i < v.size(); i++)
+        for(int i = 1; i < v.size(); i++)
         {
             if (v[i] > stima_max)
             {

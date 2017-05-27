@@ -5,12 +5,13 @@ using namespace std;
 
 int Table::istanze = 0;
 const int Table::numero_buche = 7;
+const int Table::fagioli_inizio = 3;
 
-Table::Table(): buca(2), fagioli_inizio(3)
+Table::Table(): buca(2)
 {
     //debug
     istanze++;
-    std::cout<<"creating Table ["<<istanze<<"]....OK\n";
+    //std::cout<<"creating Table ["<<istanze<<"]....OK\n";
     //debug
 
     buca[0].resize(numero_buche);
@@ -22,9 +23,9 @@ Table::Table(): buca(2), fagioli_inizio(3)
 Table::~Table()
 {
     //debug
-    std::cout<<"deleting Table ["<<istanze<<"]....";
+    //std::cout<<"deleting Table ["<<istanze<<"]....";
     istanze--;
-    std::cout<<"OK\n";
+    //std::cout<<"OK\n";
     //debug
 }
 

@@ -1,6 +1,8 @@
 #include "game.h"
 #include <iostream>
 #include "sleeper.h"
+#include "tree.h"
+using namespace std;
 
 int Game::istanze = 0;
 const int Game::turno_iniziale = 0;
@@ -10,7 +12,7 @@ Game::Game(Engine *en): engine_control(true),
 {
     //debug
     istanze++;
-    std::cout<<"creating Game ["<<istanze<<"]....OK\n";
+    cout<<"creating Game ["<<istanze<<"]....OK\n";
     //debug
 
     if(eng)
@@ -32,15 +34,20 @@ Game::~Game()
 {
 
     //debug
-    std::cout<<"deleting Game ["<<istanze<<"]....";
+    cout<<"deleting Game ["<<istanze<<"]....";
     istanze--;
-    std::cout<<"OK\n";
+    cout<<"OK\n";
     //debug
 }
 
 //ritornare il  numero di giocatore (ricordarsi pareggio)
-QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2)
+QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2, Tree *tree)
 {
+    QVector<data*> *id; //game vector in tree
+    if(tree)
+    {
+       id = tree->open_game();
+    }
     //all'inizio ho il permesso di giocare perche va tutto bene
     engine_control = true;
 
@@ -65,7 +72,12 @@ QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2)
             mossa = giocatori[turno]->calcolaMossa(bantumi, turno);
             controllo = bantumi.eseguiMossa(turno, mossa);
 
-            std::cout << turno << mossa << controllo << " "; //debug
+            cout << turno << mossa << controllo << " "; //debug
+
+            if(tree)
+            {
+                id->append(new data(mossa,turno));
+            }
 
             //emetto il segnale di mossa sbagliata
             //TODO mossaerrata metterla nel player e far ritornare true o false
@@ -74,12 +86,12 @@ QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2)
             //if(controllo == -1 && eng) emit mossaErrata();
 
 
-            if(controllo == 1) emit mossaValida(giocatori[turno]);
+            //if(controllo == 1) emit mossaValida(giocatori[turno]);
 
             //sistemo il turno e ripeto
             if(controllo == 0)
             {
-                emit mossaValida(giocatori[turno]);
+                //emit mossaValida(giocatori[turno]);
                 turno = Table::rival(turno);
             }
 
@@ -88,6 +100,11 @@ QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2)
 
         //termino la partita
         if(controllo == -1 && eng) engine_control = false;
+    }
+
+    if(tree)
+    {
+        tree->add(*id);
     }
 
     if(!engine_control)
@@ -99,16 +116,16 @@ QVector<PlayerPtr> Game::run(PlayerPtr g1, PlayerPtr g2)
     stato_finale = bantumi.calcolaVincitore();
     if (stato_finale == 2)
     {
-        //cout << "PARITA'" << endl; //debug
-        emit pareggio(giocatori[0], giocatori[1]);
+        cout << "PARITA'" << std::endl; //debug
+        //emit pareggio(giocatori[0], giocatori[1]);
         return giocatori;
     }
     else
     {
-        //cout << "HA VINTO IL GIOCATORE " << stato_finale << endl; //debug
+        cout << "HA VINTO IL GIOCATORE " << stato_finale << std::endl; //debug
         //rimuovo il giocatore perdente
         giocatori.remove(Table::rival(stato_finale));
-        emit vittoria(giocatori[0]);
+        //emit vittoria(giocatori[0]);
         return giocatori;
     }
 

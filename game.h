@@ -7,6 +7,7 @@
 #include <QVector>
 #include "gameabstract.h"
 #include "engine.h"
+#include <tree.h>
 
 class Engine;
 
@@ -17,7 +18,7 @@ class Game : public GameAbstract//, public QObject
 public:
     explicit Game(Engine *en = 0);
     ~Game();
-    QVector<PlayerPtr> run(PlayerPtr g1, PlayerPtr g2);
+    QVector<PlayerPtr> run(PlayerPtr g1, PlayerPtr g2, Tree *tree = nullptr);
 
 signals:
     void mossaErrata();
