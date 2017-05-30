@@ -25,7 +25,7 @@ private:
 
     QTcpSocket *tcpSocket;
     QByteArray data;
-    quint16 data_size;
+    int data_size;
 
     QByteArray result;
 };

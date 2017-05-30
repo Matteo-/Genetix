@@ -34,7 +34,9 @@ void Client::readData()
 
     in >> data;
 
+    //debug
     qDebug() << "[CLIENT] data recived...";
+    //debug
 
     processData();
 }
@@ -52,7 +54,7 @@ void Client::displayError(QAbstractSocket::SocketError socketError)
     case QAbstractSocket::ConnectionRefusedError:
         QMessageBox::information(new QWidget, tr("Client"),
                                  tr("The connection was refused by the peer. "
-                                    "Make sure the fortune server is running, "
+                                    "Make sure the Genetix server is running, "
                                     "and check that the host name and port "
                                     "settings are correct."));
         break;
@@ -121,10 +123,10 @@ void Client::sendResult(){
 //    out.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
     /* pacchetto formato da |n° byte data|   data   | */
-    out << (quint16)0;
+    out << (int)0;
     out << result;
     out.device()->seek(0);
-    out << (quint16)(block.size() - sizeof(quint16));
+    out << (int)(block.size() - sizeof(int));
 
     if( tcpSocket->write(block) == -1)
     {

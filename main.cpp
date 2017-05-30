@@ -52,26 +52,8 @@ int main(int argc, char *argv[])
         Sleeper::msleep(500);
     }
 
-    srand (time(NULL));
-
-    //test
-    //    Tree tree;
-
-    //    int p;
-    //    std::cin >> p;
-    //    for(int i = 0; i < p; i++) {
-    //    Game prova;
-    //    prova.run(PlayerPtr(new AI(new Brain({5,1}))),
-    //              PlayerPtr(new AI(new Brain({5,1}))), &tree);
-    //    }
-
-    //    tree.stampa();
-    //test
-
     w.show();
     splash.finish(&w);
-
-    //Client c;
 
 //    Client c("10.0.0.106");
 

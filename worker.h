@@ -37,7 +37,7 @@ private:
 
     //ridefinire funzione di invio
     QByteArray result;
-    qint16 result_size;
+    int result_size;
 };
 
 #endif // WORKER_H

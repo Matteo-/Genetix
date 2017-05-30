@@ -8,7 +8,7 @@
 class AI : public Player
 {
 public:
-    AI(Brain *b, int id = 0);
+    AI(Brain *b, int id = -1);
     ~AI();
     int calcolaMossa(const Table &table, int turno) const;
     void addScore(float s);
@@ -18,7 +18,7 @@ public:
     stat statistics() const;
     float getScore() const;
     int getID() const;
-    void setID(int id = 0);
+    void setID(int id = -1);
     void resetScore();
     bool operator<(const Player &) const;
     friend AI* operator+(const AI&, const AI&);

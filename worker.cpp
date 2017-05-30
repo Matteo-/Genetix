@@ -61,10 +61,10 @@ void Worker::getTask()
 //        out.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
         /* pacchetto formato da |n° byte data|   data   | */
-        out << (quint16)0;
+        out << (int)0;
         out << data;
         out.device()->seek(0);
-        out << (quint16)(block.size() - sizeof(quint16));
+        out << (int)(block.size() - sizeof(int));
 
         if( Socket->write(block) == -1)
         {

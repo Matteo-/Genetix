@@ -23,7 +23,7 @@ Engine::Engine() :
     run_flag(false),
     delay_gen(1),
     delay_partita(50),
-    numPlayers(3),
+    numPlayers(20),
     p_crossover(0.4f),
     p_selezione(0.6f),
     i(0),j(0),n(0),
@@ -35,7 +35,7 @@ Engine::Engine() :
 {
     //debug
     istanze++;
-    std::cout<<"creating Engine ["<<istanze<<"]....OK\n";
+//    std::cout<<"creating Engine ["<<istanze<<"]....OK\n";
     //debug
 
     srand(time(NULL));
@@ -44,14 +44,14 @@ Engine::Engine() :
     {
         Player *an = new AI(new Brain(topologia));
         players[i] = PlayerPtr(an);
-        std::cout<<"[CARICATO]"<<i<<"\n"; //debug
+//        std::cout<<"[CARICATO]"<<i<<"\n"; //debug
     }
 
     //debug
-    for(int i = 0; i < players.size(); i++) {
-        PlayerPtr prova = players[i];
-        std::cout<<"player "<<i<<" check\n";
-    }
+//    for(int i = 0; i < players.size(); i++) {
+//        PlayerPtr prova = players[i];
+//        std::cout<<"player "<< players[i]->getID() <<" check\n";
+//    }
     //debug
 
     //connessioni
@@ -254,43 +254,38 @@ QByteArray Engine::serialize(QVector<PlayerPtr> p)
         //getchar(); //debug
     }
 
-//    //debug
-//    QDataStream in(data);
-//    in.setVersion(QDataStream::Qt_4_0);
-//    in.setByteOrder(QDataStream::LittleEndian);
-//    in.setFloatingPointPrecision(QDataStream::SinglePrecision);
+    //debug
+    QDataStream in(data);
+    in.setVersion(QDataStream::Qt_4_0);
+    in.setByteOrder(QDataStream::LittleEndian);
+    in.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
-//    int id;
-//    int dim;
-//    while(!in.atEnd()) {
-//        in >> dim;
-//        qDebug() << dim;
-//        QVector<int> t(dim);
-//        for(int i = 0; i < dim; i++)
-//        {
-//            in >> t[i];
-//            qDebug() << t[i];
-//        }
+    qDebug() << "[serialize] print data";
+    int tmp;
+    float ftmp;
+    int dim;
+    while(!in.atEnd()) {
+        in >> dim;
+        qDebug() << dim;
+        for(int i = 0; i < dim; i++)
+        {
+            in >> tmp;
+            qDebug() << tmp;
+        }
 
-//        in >> dim;
-//        qDebug() << dim;
-//        QVector<float> w(dim);
-//        for(int i = 0; i < dim; i++)
-//        {
-//            in >> w[i];
-//            qDebug() << w[i];
-//        }
+        in >> dim;
+        qDebug() << dim;
+        for(int i = 0; i < dim; i++)
+        {
+            in >> ftmp;
+            qDebug() << ftmp;
+        }
 
-//        in >> id;
-//        qDebug() << id;
-//    }
+        in >> tmp;
+        qDebug() << tmp;
+    }
 
-//    QVector<PlayerPtr> pr = deserialize(data);
-//    stat s = pr[0]->statistics();
-//    std::cout << s;
-
-//    getchar();
-//    //debug
+    //debug
 
     return data;
 
@@ -309,30 +304,32 @@ QVector<PlayerPtr> Engine::deserialize(QByteArray data)
 
     int id;
     int dim;
+    qDebug() << "[deserialize] print data;";
     while(!in.atEnd()) {
         in >> dim;
+        qDebug() << dim;
         QVector<int> t(dim);
         for(int i = 0; i < dim; i++)
         {
             in >> t[i];
+            qDebug() << t[i];
         }
 
         in >> dim;
+        qDebug() << dim;
         QVector<float> w(dim);
         for(int i = 0; i < dim; i++)
         {
             in >> w[i];
+            qDebug() << w[i];
         }
 
         in >> id;
+        qDebug() << id;
 
-//        qDebug() << "vettore:";
-//        for(int i = 0; i < t.size(); i++) qDebug() << t[i];
-//        qDebug() << "creo brain";
         Brain *b = new Brain(t,&w);
-//        qDebug() << "brain fatto";
         Player *ai = new AI(b, id);
-
+        
         p.append(PlayerPtr(ai));
 
     }
@@ -499,8 +496,10 @@ PlayerPtr Engine::crossover(PlayerPtr a, PlayerPtr b, float p)
     }
     else
     {
-        a->resetScore();
-        a->setID();
-        return a;
+        QByteArray ser = serialize({a});
+        PlayerPtr copia = deserialize(ser).first();
+        copia->setID();
+        copia->resetScore();
+        return copia;
     }
 }

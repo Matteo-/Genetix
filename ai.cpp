@@ -263,9 +263,8 @@ int AI::getID() const
 
 void AI::setID(int id)
 {
-    if(id) { ID = id; }
-    else { ID = static_id; }
-    static_id++;
+    if(id != -1) { ID = id; }
+    else { ID = static_id; static_id++; }
 
     std::cout << "[setID] setto id " << ID << " \n"; //debug
 }
