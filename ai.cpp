@@ -17,16 +17,15 @@ struct eval {
 
 int AI::max_iter_backprop = 500;
 int AI::istanze = 0;
+int AI::static_id = 0;
 int AI::max_depth = 7;
 
 AI::AI(Brain *b, int id): brain(b)
 {
-    if(id) { ID = id; }
-    else { ID = istanze; }
-
     istanze++;
 
     cout<<"creating AI ["<<istanze<<"]....OK\n"; //debug
+    setID(id);
     //debug
 //    cout << std::endl; //debug
 //    brain->info();  //debug
@@ -260,4 +259,13 @@ int AI::maxValueOf(const QVector<float> v)
 int AI::getID() const
 {
     return ID;
+}
+
+void AI::setID(int id)
+{
+    if(id) { ID = id; }
+    else { ID = static_id; }
+    static_id++;
+
+    std::cout << "[setID] setto id " << ID << " \n"; //debug
 }

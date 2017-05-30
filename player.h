@@ -62,6 +62,7 @@ public:
     virtual bool operator<(const Player &) const = 0;
     virtual float getScore() const = 0;
     virtual int getID() const = 0;
+    virtual void setID(int = 0) = 0;
     virtual void resetScore() = 0;
     virtual ~Player() {}
 

@@ -86,15 +86,22 @@ void Engine::run()
 
         for(; i < players.size() && run_flag; i++)
         {
-            //std::cout << "FI = " << i << std::endl; //debug
             for(; j < players.size() && run_flag; j++)
             {
-                if(i != j)
+                if(players[i]->getID() != players[j]->getID())
                 {
+                    //debug
                     std::cout << std::endl <<"GEN "<< generation //debug
                         << " PARTITA NUMERO " << n
                         << " ga "<< players[i]->getID()
                         << " gb "<< players[j]->getID() <<std::endl; //debug
+
+                    qDebug() << "[array giocator]";
+                    for(int k = 0; k < players.size(); k++)
+                    {
+                        qDebug() << players[k]->getID();
+                    }
+                    //debug
 
                     server.distribute(serialize({players[i], players[j]}));
 
@@ -105,20 +112,11 @@ void Engine::run()
             j = 0;
         }
 
-        //ciclo di prova con il tester
-//        for(; i < players.size() && run_flag; i++)
-//        {
-//            std::cout << std::endl <<"GEN "<< generation; //debug
-//            std::cout << " PARTITA NUMERO " << n << std::endl;
-//            partita->run(players[i], tester);
-//            n++;
-//            Sleeper::msleep(delay_partita);
-//        }
-
         if(run_flag)
         {
             i = 0, j = 0, n = 0;             //resetto lo stato
 
+            server.wait();
 
             //debug stampo i punteggi
             for(int i = 0; i < numPlayers; i++)
@@ -126,24 +124,18 @@ void Engine::run()
             std::cout<<std::endl;
             //debug
 
-            //salvo la rete migliore
-            PlayerPtr p = players[0];
-            if(best == nullptr || best->getScore() < p->getScore())
-            {
-                best = p;
-                std::cout << best->statistics();
-            }
-
-            server.wait();
-
             selezioneTorneo(p_selezione);
 
 
             generation++;                    //aumento il numero di generazione
             emit GenChanged(generation);     //emetto il segnale
         }
+        else
+        {
+            //aspetto eventuali partite in coda prima dello stop
+            server.wait();
+        }
 
-        //da togliere (mettere delay solo sulle partite)
     }
 }
 
@@ -167,30 +159,6 @@ void Engine::setDelay(int d)
     delay_partita = d;
 }
 
-//void Engine::mossaErrata()
-//{
-//    emit stopGame();
-//}
-
-//void Engine::mossaValida(PlayerPtr p)
-//{
-//    //std::cout<<"mossa eseguita quindi premio"<<std::endl; //debug
-//    p->addScore(score_mossa_valida);
-//}
-
-//void Engine::vincitore(PlayerPtr p)
-//{
-//    //std::cout<<"il giocatore ha vinto 10pt"<<std::endl; //debug
-//    p->addScore(score_vittoria);
-//}
-
-//void Engine::pareggio(PlayerPtr p1, PlayerPtr p2)
-//{
-//    //std::cout<<"finita in pareggio 5pt"<<std::endl; //debug
-//    p1->addScore(score_pareggio);
-//    p2->addScore(score_pareggio);
-//}
-
 // funzione per algoritmo di sort
 //TODO rifare con overloading operator<
 bool Engine::compare(const PlayerPtr a, const PlayerPtr b)
@@ -201,38 +169,46 @@ bool Engine::compare(const PlayerPtr a, const PlayerPtr b)
 
 void Engine::fitness(QByteArray &elab)
 {
+    qDebug() << "[fitness] faccio la fitness";
+
     QDataStream in(elab);
     in.setVersion(QDataStream::Qt_4_0);
     in.setByteOrder(QDataStream::LittleEndian);
     in.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
-    quint16 dim;
-    in >> dim;
     QVector<int> res(3);
 
+    /*
+     * pacchetto: | n° vincitore | ID | ID |
+     */
     in >> res[0] >> res[1] >> res[2];
+    qDebug() << "[fitness] v:" << res[0] << "ID0: " << res[1] << "ID1: " << res[2];
 
     PlayerPtr p0, p1;
     int find = 0;
     for(int i = 0; i < players.size(); i++)
     {
-        if(players[i]->getID() == res[1]) { p0 = players[i]; find++; }
+        if(players[i]->getID() == res[1]) { p0 = players[i]; find++;
+        qDebug() << "[fitness]trovato p0"; }
 
-        if(players[i]->getID() == res[2]) { p1 = players[i]; find++; }
+        if(players[i]->getID() == res[2]) { p1 = players[i]; find++;
+        qDebug() << "[fitness]trovato p1"; }
 
         if(find == 2) break;
     }
+
+    //getchar(); //debug
 
     switch (res[0]) {
     case 0:
         p0->win(score_vittoria);
         p1->lose(score_sconfitta);
-        cout << "HA VINTO IL GIOCATORE 0" << std::endl; //debug
+        cout << "HA VINTO IL GIOCATORE " << res[1] << std::endl; //debug
         break;
     case 1:
         p0->lose(score_sconfitta);
         p1->win(score_vittoria);
-        cout << "HA VINTO IL GIOCATORE 1" << std::endl; //debug
+        cout << "HA VINTO IL GIOCATORE " << res[2] << std::endl; //debug
         break;
     case 2:
         p0->parity(score_pareggio);
@@ -242,6 +218,8 @@ void Engine::fitness(QByteArray &elab)
     default:
         break;
     }
+
+    qDebug() << "[fitness] fine";
 }
 
 QByteArray Engine::serialize(QVector<PlayerPtr> p)
@@ -271,6 +249,9 @@ QByteArray Engine::serialize(QVector<PlayerPtr> p)
            out << s.strategy[i];
         }
         out << s.ID;
+
+        qDebug() << "[serialize] serializzato id:" << s.ID;
+        //getchar(); //debug
     }
 
 //    //debug
@@ -385,6 +366,16 @@ void Engine::selezioneTorneo(float p)
      * questo processo mi aiutera in futuro nella selezione del giocatore
      */
     qSort(players.begin(), players.end(), Engine::compare);
+
+    /*
+     * salvo la rete migliore
+     */
+    PlayerPtr first = players[0];
+    if(best == nullptr || best->getScore() < first->getScore())
+    {
+        best = first;
+        std::cout << best->statistics();
+    }
 
     cout << "entro ciclo 1..." << flush; //debug
 
@@ -509,6 +500,7 @@ PlayerPtr Engine::crossover(PlayerPtr a, PlayerPtr b, float p)
     else
     {
         a->resetScore();
+        a->setID();
         return a;
     }
 }

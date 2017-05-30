@@ -44,7 +44,6 @@ HEADERS  += mainwindow.h \
     style.h \
     tree.h \
     random.h \
-    ../MyServer/worker.h \
     worker.h \
     distributednetwork.h \
     client.h

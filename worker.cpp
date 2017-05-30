@@ -15,6 +15,8 @@ void Worker::readClient()
     if(working) {
         QDataStream in(Socket);
         in.setVersion(QDataStream::Qt_4_0);
+//        in.setByteOrder(QDataStream::LittleEndian);
+//        in.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
         if (result_size == 0) {
 
@@ -55,6 +57,8 @@ void Worker::getTask()
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
         out.setVersion(QDataStream::Qt_4_0);
+//        out.setByteOrder(QDataStream::LittleEndian);
+//        out.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
         /* pacchetto formato da |n° byte data|   data   | */
         out << (quint16)0;

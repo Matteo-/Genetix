@@ -54,48 +54,27 @@ int main(int argc, char *argv[])
 
     srand (time(NULL));
 
-//    Tree tree;
-
-//    int p;
-//    std::cin >> p;
-//    for(int i = 0; i < p; i++) {
-//    Game prova;
-//    prova.run(PlayerPtr(new AI(new Brain({5,1}))),
-//              PlayerPtr(new AI(new Brain({5,1}))), &tree);
-//    }
-
-//    tree.stampa();
-
-
-
-
     //test
-//    std::cout<<"INIZIO TEST\n";
-//    float output;
-//    Brain b({1,2,3,4,1});
-//    b.info();
-//    b.print();
-//    output = b.getOutput({5})[0];
-//    std::cout<<"OUTPUT: "<<output<<"\n";
-//    b.info();
-//    b.print();
-//    b.backprop({output}, {1});
-//    std::cout<<"BACKPROP\n";
-//    b.info();
-//    b.print();
-//    output = b.getOutput({5})[0];
-//    std::cout<<"OUTPUT: "<<output<<"\n";
-//    std::cout<<"FINE TEST\n";
-//    getchar();
+    //    Tree tree;
+
+    //    int p;
+    //    std::cin >> p;
+    //    for(int i = 0; i < p; i++) {
+    //    Game prova;
+    //    prova.run(PlayerPtr(new AI(new Brain({5,1}))),
+    //              PlayerPtr(new AI(new Brain({5,1}))), &tree);
+    //    }
+
+    //    tree.stampa();
     //test
 
     w.show();
     splash.finish(&w);
 
-    Client c;
+    //Client c;
 
 //    Client c("10.0.0.106");
 
-    a.exec();
+a.exec();
 }
 

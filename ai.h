@@ -18,6 +18,7 @@ public:
     stat statistics() const;
     float getScore() const;
     int getID() const;
+    void setID(int id = 0);
     void resetScore();
     bool operator<(const Player &) const;
     friend AI* operator+(const AI&, const AI&);
@@ -35,6 +36,7 @@ private:
     static int max_iter_backprop;
     int ID;
     static int istanze;                    //debug memory leak
+    static int static_id;
 };
 
 #endif // AI_H

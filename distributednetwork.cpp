@@ -28,27 +28,29 @@ void DistributedNetwork::newClient()
 
     QTcpSocket *clientConnection = this->nextPendingConnection();
 
-    Worker *client = new Worker(clientConnection, rand(), tasks, task_mutex);
-
     {
         QMutexLocker locker(&worker_mutex);
+        Worker *client = new Worker(clientConnection,
+                                    workers.size(), tasks, task_mutex);
         workers.append(client);
+
+        connect(clientConnection, SIGNAL(readyRead()),
+                client, SLOT(readClient()));
+
+        connect(clientConnection, SIGNAL(disconnected()),
+                clientConnection, SLOT(deleteLater()));
+
+        connect(clientConnection, SIGNAL(disconnected()),
+                client, SLOT(disconnected()));
+
+        connect(client, SIGNAL(disconnected(int,QByteArray&)),
+                this, SLOT(clientDisconnected(int,QByteArray&)));
+
+        connect(this, SIGNAL(newtask()), client, SLOT(getTask()));
+
+        connect(client, SIGNAL(taskComplete(QByteArray&)),
+                this, SLOT(getElabData(QByteArray&)));
     }
-
-    connect(clientConnection, SIGNAL(readyRead()), client, SLOT(readClient()));
-
-    connect(clientConnection, SIGNAL(disconnected()),
-            clientConnection, SLOT(deleteLater()));
-
-    connect(clientConnection, SIGNAL(disconnected()),
-            client, SLOT(disconnected()));
-
-    connect(client, SIGNAL(disconnected(int,QByteArray&)),
-            this, SLOT(clientDisconnected(int,QByteArray&)));
-
-    connect(this, SIGNAL(newtask()), client, SLOT(getTask()));
-
-
 
     qDebug() << "new client connected"; //debug
 
@@ -116,6 +118,7 @@ bool DistributedNetwork::allDone() const
 
 void DistributedNetwork::getElabData(QByteArray &result)
 {
+    qDebug() << "[getelabdata server] emetto risultato";
     emit sendResult(result);
 }
 

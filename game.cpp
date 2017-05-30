@@ -14,20 +14,6 @@ Game::Game(Engine *en): engine_control(true),
     istanze++;
     cout<<"creating Game ["<<istanze<<"]....OK\n";
     //debug
-
-    if(eng)
-    {
-        connect(this, SIGNAL(mossaErrata()), eng, SLOT(mossaErrata()));
-
-        connect(this, SIGNAL(mossaValida(PlayerPtr)),
-                eng, SLOT(mossaValida(PlayerPtr)));
-
-        connect(this, SIGNAL(vittoria(PlayerPtr)),
-                eng, SLOT(vincitore(PlayerPtr)));
-
-        connect(this, SIGNAL(pareggio(PlayerPtr,PlayerPtr)),
-                eng, SLOT(pareggio(PlayerPtr,PlayerPtr)));
-    }
 }
 
 Game::~Game()
