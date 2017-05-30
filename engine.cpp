@@ -30,7 +30,8 @@ Engine::Engine() :
     partita(new Game(this)),
     players(numPlayers),
     best(nullptr),
-    tree(NULL)
+    tree(NULL),
+    server()
 {
     //debug
     istanze++;
@@ -55,6 +56,9 @@ Engine::Engine() :
 
     //connessioni
     connect(this, SIGNAL(stopGame()), partita, SLOT(stop()));
+
+    connect(&server, SIGNAL(sendResult(QByteArray&)),
+            this, SLOT(fitness(QByteArray&)));
 
 }
 
@@ -85,13 +89,14 @@ void Engine::run()
             //std::cout << "FI = " << i << std::endl; //debug
             for(; j < players.size() && run_flag; j++)
             {
-                //std::cout << "FJ = " << j << std::endl; //debug
                 if(i != j)
                 {
                     std::cout << std::endl <<"GEN "<< generation //debug
-                        << " PARTITA NUMERO " << n << " ga "<<
-                                 i<<" gb "<<j<<std::endl; //debug
-                    fitness(players[i], players[j]);
+                        << " PARTITA NUMERO " << n
+                        << " ga "<< players[i]->getID()
+                        << " gb "<< players[j]->getID() <<std::endl; //debug
+
+                    server.distribute(serialize({players[i], players[j]}));
 
                     n++;
                     Sleeper::msleep(delay_partita);
@@ -129,6 +134,8 @@ void Engine::run()
                 std::cout << best->statistics();
             }
 
+            server.wait();
+
             selezioneTorneo(p_selezione);
 
 
@@ -160,29 +167,29 @@ void Engine::setDelay(int d)
     delay_partita = d;
 }
 
-void Engine::mossaErrata()
-{
-    emit stopGame();
-}
+//void Engine::mossaErrata()
+//{
+//    emit stopGame();
+//}
 
-void Engine::mossaValida(PlayerPtr p)
-{
-    //std::cout<<"mossa eseguita quindi premio"<<std::endl; //debug
-    p->addScore(score_mossa_valida);
-}
+//void Engine::mossaValida(PlayerPtr p)
+//{
+//    //std::cout<<"mossa eseguita quindi premio"<<std::endl; //debug
+//    p->addScore(score_mossa_valida);
+//}
 
-void Engine::vincitore(PlayerPtr p)
-{
-    //std::cout<<"il giocatore ha vinto 10pt"<<std::endl; //debug
-    p->addScore(score_vittoria);
-}
+//void Engine::vincitore(PlayerPtr p)
+//{
+//    //std::cout<<"il giocatore ha vinto 10pt"<<std::endl; //debug
+//    p->addScore(score_vittoria);
+//}
 
-void Engine::pareggio(PlayerPtr p1, PlayerPtr p2)
-{
-    //std::cout<<"finita in pareggio 5pt"<<std::endl; //debug
-    p1->addScore(score_pareggio);
-    p2->addScore(score_pareggio);
-}
+//void Engine::pareggio(PlayerPtr p1, PlayerPtr p2)
+//{
+//    //std::cout<<"finita in pareggio 5pt"<<std::endl; //debug
+//    p1->addScore(score_pareggio);
+//    p2->addScore(score_pareggio);
+//}
 
 // funzione per algoritmo di sort
 //TODO rifare con overloading operator<
@@ -192,30 +199,168 @@ bool Engine::compare(const PlayerPtr a, const PlayerPtr b)
     return !( *(a.get()) < *(b.get()) );
 }
 
-void Engine::fitness(PlayerPtr p0, PlayerPtr p1)
+void Engine::fitness(QByteArray &elab)
 {
-    int result = partita->run(p0, p1, tree);
+    QDataStream in(elab);
+    in.setVersion(QDataStream::Qt_4_0);
+    in.setByteOrder(QDataStream::LittleEndian);
+    in.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
-    switch (result) {
+    quint16 dim;
+    in >> dim;
+    QVector<int> res(3);
+
+    in >> res[0] >> res[1] >> res[2];
+
+    PlayerPtr p0, p1;
+    int find = 0;
+    for(int i = 0; i < players.size(); i++)
+    {
+        if(players[i]->getID() == res[1]) { p0 = players[i]; find++; }
+
+        if(players[i]->getID() == res[2]) { p1 = players[i]; find++; }
+
+        if(find == 2) break;
+    }
+
+    switch (res[0]) {
     case 0:
-        p0.get()->win(score_vittoria);
-        p1.get()->lose(score_sconfitta);
+        p0->win(score_vittoria);
+        p1->lose(score_sconfitta);
         cout << "HA VINTO IL GIOCATORE 0" << std::endl; //debug
         break;
     case 1:
-        p0.get()->lose(score_sconfitta);
-        p1.get()->win(score_vittoria);
+        p0->lose(score_sconfitta);
+        p1->win(score_vittoria);
         cout << "HA VINTO IL GIOCATORE 1" << std::endl; //debug
         break;
     case 2:
-        p0.get()->parity(score_pareggio);
-        p0.get()->parity(score_pareggio);
+        p0->parity(score_pareggio);
+        p0->parity(score_pareggio);
         cout << "PARITA'" << std::endl; //debug
         break;
     default:
         break;
     }
 }
+
+QByteArray Engine::serialize(QVector<PlayerPtr> p)
+{
+    QByteArray data;
+    QDataStream out(&data, QIODevice::WriteOnly);
+    out.setByteOrder(QDataStream::LittleEndian);
+    out.setFloatingPointPrecision(QDataStream::SinglePrecision);
+    out.setVersion(QDataStream::Qt_4_0);
+
+    for (int i = 0; i < p.size(); i++)
+    {
+        stat s = p[i]->statistics();
+
+//        std::cout << s; //debug
+
+        /* costruisco il pacchetto
+         * | n° elem. topologia | topologia | n° elem. weights | weights | ID |
+         */
+        out << s.topology.size();
+        for(int i = 0; i < s.topology.size(); i++) {
+            out << s.topology[i];
+        }
+
+        out << s.strategy.size();
+        for(int i = 0; i < s.strategy.size(); i++) {
+           out << s.strategy[i];
+        }
+        out << s.ID;
+    }
+
+//    //debug
+//    QDataStream in(data);
+//    in.setVersion(QDataStream::Qt_4_0);
+//    in.setByteOrder(QDataStream::LittleEndian);
+//    in.setFloatingPointPrecision(QDataStream::SinglePrecision);
+
+//    int id;
+//    int dim;
+//    while(!in.atEnd()) {
+//        in >> dim;
+//        qDebug() << dim;
+//        QVector<int> t(dim);
+//        for(int i = 0; i < dim; i++)
+//        {
+//            in >> t[i];
+//            qDebug() << t[i];
+//        }
+
+//        in >> dim;
+//        qDebug() << dim;
+//        QVector<float> w(dim);
+//        for(int i = 0; i < dim; i++)
+//        {
+//            in >> w[i];
+//            qDebug() << w[i];
+//        }
+
+//        in >> id;
+//        qDebug() << id;
+//    }
+
+//    QVector<PlayerPtr> pr = deserialize(data);
+//    stat s = pr[0]->statistics();
+//    std::cout << s;
+
+//    getchar();
+//    //debug
+
+    return data;
+
+}
+
+QVector<PlayerPtr> Engine::deserialize(QByteArray data)
+{
+    //qDebug() << "size: " << data.size();
+
+    QVector<PlayerPtr> p;
+
+    QDataStream in(data);
+    in.setVersion(QDataStream::Qt_4_0);
+    in.setByteOrder(QDataStream::LittleEndian);
+    in.setFloatingPointPrecision(QDataStream::SinglePrecision);
+
+    int id;
+    int dim;
+    while(!in.atEnd()) {
+        in >> dim;
+        QVector<int> t(dim);
+        for(int i = 0; i < dim; i++)
+        {
+            in >> t[i];
+        }
+
+        in >> dim;
+        QVector<float> w(dim);
+        for(int i = 0; i < dim; i++)
+        {
+            in >> w[i];
+        }
+
+        in >> id;
+
+//        qDebug() << "vettore:";
+//        for(int i = 0; i < t.size(); i++) qDebug() << t[i];
+//        qDebug() << "creo brain";
+        Brain *b = new Brain(t,&w);
+//        qDebug() << "brain fatto";
+        Player *ai = new AI(b, id);
+
+        p.append(PlayerPtr(ai));
+
+    }
+
+    return p;
+
+}
+
+
 
 /**
  * @brief Engine::fitnessAVG
@@ -353,8 +498,7 @@ void Engine::selezioneTorneo(float p)
 PlayerPtr Engine::crossover(PlayerPtr a, PlayerPtr b, float p)
 {
     std::cout<<std::endl<<"[FACCIO IL CROSSOVER] "<<std::endl; //debug
-    //AI *ai = dynamic_cast<AI*>(a.get());
-    //AI *bi = dynamic_cast<AI*>(b.get());
+
     if(Brain::randTo(0,1.0f) <= p)
     {
 //        std::cout<<"faccio la + in engine\n";

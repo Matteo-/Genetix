@@ -14,6 +14,8 @@
 #include "gameabstract.h"
 #include "tester.h"
 #include "tree.h"
+#include "distributednetwork.h"
+#include <QDataStream>
 
 class Game;
 
@@ -26,17 +28,21 @@ public:
     ~Engine();
     void stop();
     void run();
+    static QByteArray serialize(QVector<PlayerPtr> p);
+    static QVector<PlayerPtr> deserialize(QByteArray data);
+
 
 public slots:
     //ciclo principale
     void runEvent();
     void stopEvent();
     void setDelay(int);
+    void fitness(QByteArray &elab);
     //Game
-    void mossaErrata();
-    void mossaValida(PlayerPtr);
-    void vincitore(PlayerPtr);
-    void pareggio(PlayerPtr, PlayerPtr);
+    //void mossaErrata();
+    //void mossaValida(PlayerPtr);
+    //void vincitore(PlayerPtr);
+    //void pareggio(PlayerPtr, PlayerPtr);
 
 signals:
     void GenChanged(int newGen);    //segnala l'avanzamento di gen.
@@ -67,6 +73,7 @@ private:
     static const QVector<int> topologia;
     static int istanze;                    //debug memory leak
     Tree *tree;
+    DistributedNetwork server;
 };
 
 #endif // ENGINE_H

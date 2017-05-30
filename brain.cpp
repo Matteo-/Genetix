@@ -9,35 +9,43 @@ const float Brain::m_bias = 1.0f;
 const float Brain::weightrandmax = 1.0f; //from -weightra.. to +weighra..
 float Brain::mutation_prob = 0.015f;
 
-Brain::Brain(const QVector<int> &topology, QObject *parent) : QObject(parent),  m_topology(topology), learning_rate(0.3f)
+Brain::Brain(const QVector<int> &topology, const QVector<float> *w, QObject *parent) : QObject(parent),  m_topology(topology), learning_rate(0.3f)
 {
     //debug
     istanze++;
     std::cout<<"creating Brain ["<<istanze<<"]....";
     //debug
 
-  int neurons = 0;  // numero di neuroni totali da allocare
-  int weights = 0;  // numero di pesi totali da allocare
+    int neurons = 0;  // numero di neuroni totali da allocare
+    int weights = 0;  // numero di pesi totali da allocare
 
-  /**
-   * calcolo il numero di neuroni
-   * e di pesi totali con dei semplici cicli
-   * infine ridimensiono ogni vector con la giusta grandezza
-   */
-  for (int i = 0; i < m_topology.size(); i++) {
+    /**
+    * calcolo il numero di neuroni
+    * e di pesi totali con dei semplici cicli
+    * infine ridimensiono ogni vector con la giusta grandezza
+    */
+    for (int i = 0; i < m_topology.size(); i++) {
     neurons += m_topology[i];
-  }
-  m_neurons.resize(neurons);
+    }
+    m_neurons.resize(neurons);
 
-  for (int i = 0; i < m_topology.size()-1; i++) {
-    weights += m_topology[i] * m_topology[i+1];
-  }
-  m_weights.resize(weights);
-  //carico valori random
-  for(int i = 0; i < m_weights.size(); i++)
-      //rand tra -weightrandmax e weightrandmax
-      m_weights[i] = randTo(-weightrandmax, weightrandmax);
-  std::cout << "OK" << std::endl; //debug
+    if(w) {
+
+//        std::cout << "[costr brain] creo pesi"; //debug
+        m_weights = *w;
+//        std::cout << "[costr brain] finito creo pesi"; //debug
+    }
+    else {
+        for (int i = 0; i < m_topology.size()-1; i++) {
+        weights += m_topology[i] * m_topology[i+1];
+        }
+        m_weights.resize(weights);
+        //carico valori random
+        for(int i = 0; i < m_weights.size(); i++)
+          //rand tra -weightrandmax e weightrandmax
+          m_weights[i] = randTo(-weightrandmax, weightrandmax);
+        std::cout << "OK" << std::endl; //debug
+    }
 }
 
 Brain::~Brain()
@@ -412,7 +420,12 @@ float Brain::squaredError(float t, float y) const
     return 0.5f * pow((t - y),2) * learning_rate;
 }
 
-QVector<float> Brain::getWeights()
+QVector<float>& Brain::getWeights()
 {
     return m_weights;
+}
+
+QVector<int>& Brain::getTopology()
+{
+    return m_topology;
 }

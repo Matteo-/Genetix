@@ -12,6 +12,7 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include "tree.h"
+#include "client.h"
 
 class T : public QThread
 {
@@ -90,6 +91,11 @@ int main(int argc, char *argv[])
 
     w.show();
     splash.finish(&w);
+
+    Client c;
+
+//    Client c("10.0.0.106");
+
     a.exec();
 }
 

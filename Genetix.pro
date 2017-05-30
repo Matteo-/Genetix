@@ -25,7 +25,10 @@ SOURCES += main.cpp\
     tester.cpp \
     style.cpp \
     tree.cpp \
-    random.cpp
+    random.cpp \
+    worker.cpp \
+    distributednetwork.cpp \
+    client.cpp
 
 HEADERS  += mainwindow.h \
     umano.h \
@@ -40,7 +43,11 @@ HEADERS  += mainwindow.h \
     tester.h \
     style.h \
     tree.h \
-    random.h
+    random.h \
+    ../MyServer/worker.h \
+    worker.h \
+    distributednetwork.h \
+    client.h
 
 FORMS    += mainwindow.ui
 

@@ -19,19 +19,23 @@ int AI::max_iter_backprop = 500;
 int AI::istanze = 0;
 int AI::max_depth = 7;
 
-AI::AI(Brain *b): brain(b)
+AI::AI(Brain *b, int id): brain(b)
 {
-    //debug
+    if(id) { ID = id; }
+    else { ID = istanze; }
+
     istanze++;
-    cout<<"creating AI ["<<istanze<<"]....OK\n";
+
+    cout<<"creating AI ["<<istanze<<"]....OK\n"; //debug
     //debug
 //    cout << std::endl; //debug
 //    brain->info();  //debug
 //    brain->print(); //debug
 //    cout << std::endl; //debug
 
+    QVector<int> t = brain->getTopology();
     QVector<float> w = brain->getWeights();
-    statistics_ = stat(&w);
+    statistics_ = stat(&t, &w, ID);
 }
 
 AI::~AI()
@@ -164,8 +168,9 @@ void AI::addScore(float s)
 
 void AI::resetScore()
 {
+    QVector<int> t = brain->getTopology();
     QVector<float> w = brain->getWeights();
-    statistics_ = stat(&w);
+    statistics_ = stat(&t,&w,ID);
 }
 
 void AI::win(float s)
@@ -186,7 +191,7 @@ void AI::parity(float s)
     statistics_.parity++;
 }
 
-stat AI::statistics()
+stat AI::statistics() const
 {
     return statistics_;
 }
@@ -196,7 +201,7 @@ AI* operator+(const AI &a, const AI &b)
     //debug
     //cout<<"faccio la + tra in AI\n";
     //debug
-    AI *figlio = new AI(*(a.brain) + *(b.brain));
+    AI *figlio = new AI((*(a.brain) + *(b.brain)));
     return figlio;
 }
 
@@ -250,4 +255,9 @@ int AI::maxValueOf(const QVector<float> v)
         return indice;
     }
     else { return -1; }
+}
+
+int AI::getID() const
+{
+    return ID;
 }

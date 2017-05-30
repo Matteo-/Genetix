@@ -8,15 +8,16 @@
 class AI : public Player
 {
 public:
-    AI(Brain *b);
+    AI(Brain *b, int id = 0);
     ~AI();
     int calcolaMossa(const Table &table, int turno) const;
     void addScore(float s);
     void win(float s);
     void lose(float s);
     void parity(float s);
-    stat statistics();
+    stat statistics() const;
     float getScore() const;
+    int getID() const;
     void resetScore();
     bool operator<(const Player &) const;
     friend AI* operator+(const AI&, const AI&);
@@ -32,6 +33,7 @@ private:
     stat statistics_;
     Brain *brain;
     static int max_iter_backprop;
+    int ID;
     static int istanze;                    //debug memory leak
 };
 

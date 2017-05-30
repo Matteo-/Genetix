@@ -9,7 +9,8 @@ class Brain : public QObject
     Q_OBJECT
 
 public:
-    Brain(const QVector<int> &topology, QObject *parent = 0);
+    Brain(const QVector<int> &topology, const QVector<float> *weights = 0,
+          QObject *parent = 0);
     ~Brain();
     friend Brain* operator+ (const Brain&, const Brain&);
     //explicit Brain(QObject *parent = 0);
@@ -18,7 +19,8 @@ public:
     //void test();
     void print() const;
     void info() const;
-    QVector<float> getWeights();
+    QVector<float>& getWeights();
+    QVector<int>& getTopology();
     static float randTo(float min, float max);
 
 private:
