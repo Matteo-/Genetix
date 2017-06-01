@@ -12,7 +12,7 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include "tree.h"
-#include "client.h"
+#include "clientwindow.h"
 
 class T : public QThread
 {
@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
     Engine engine;
     MainWindow w;
 
+
     //connetto il numero di generazione con la gui
     QObject::connect(&engine,SIGNAL(GenChanged(int)),&w,SLOT(changedGen(int)));
 
@@ -47,15 +48,16 @@ int main(int argc, char *argv[])
                      &engine, SLOT(setDelay(int)));
 
     //display splash screen
-    for(int i = 0; i <= 4; i++) {
-        a.processEvents();
-        Sleeper::msleep(500);
-    }
+//    for(int i = 0; i <= 4; i++) {
+//        a.processEvents();
+//        Sleeper::msleep(500);
+//    }
 
     w.show();
     splash.finish(&w);
 
-//    Client c("10.0.0.106");
+//    ClientWindow wclient;
+//    wclient.show();
 
 a.exec();
 }

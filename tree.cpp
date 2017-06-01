@@ -3,9 +3,11 @@
 #include <fstream>
 using namespace std;
 
-Tree::Tree(): tree(6, nullptr)
-{
+Tree::Tree(): tree(6, nullptr) {}
 
+Tree::~Tree()
+{
+    for(int i = 0; i < tree.size(); i++) delete tree[i];
 }
 
 QVector<data *>* Tree::open_game() const
@@ -16,7 +18,10 @@ QVector<data *>* Tree::open_game() const
 void Tree::add(QVector<data *> &id)
 {
     recursive_add(tree, id);
-    //delete id;
+
+    //dealloco id
+    for(int i = 0; i < id.size(); i++) delete id[i];
+    delete &id;
 }
 
 void Tree::recursive_add(QVector<nodo*> &tree, QVector<data*> &id)

@@ -12,12 +12,19 @@ class Client : public QObject
 {
     Q_OBJECT
 public:
-    explicit Client(QString host = "localhost",
-                    quint16 port = 2501, QObject *parent = 0);
+    explicit Client(QObject *parent = 0);
+    ~Client();
+    void connetti(QString host = "localhost", quint16 port = 2501);
+
+signals:
+    void output(QString);
+    void status(QAbstractSocket::SocketState s);
 
 private slots:
+    void state(QAbstractSocket::SocketState s);
     void readData();
     void displayError(QAbstractSocket::SocketError socketError);
+    void getOutput(QString s);
 
 private:
     void processData();

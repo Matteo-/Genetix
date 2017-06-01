@@ -6,13 +6,13 @@
 #include <QtAlgorithms>
 #include "sleeper.h"
 #include <math.h>
+#include <QFile>
 using namespace std;
 
 int Engine::istanze = 0;
 const float Engine::score_vittoria = 10.0f;
 const float Engine::score_pareggio = 5.0f;
-const float Engine::score_sconfitta = 0.0f;
-const float Engine::score_mossa_valida = 0.0f;
+const float Engine::score_sconfitta = -0.0f;
 const QVector<int> Engine::topologia = {5,1};
 
 /**
@@ -23,7 +23,7 @@ Engine::Engine() :
     run_flag(false),
     delay_gen(1),
     delay_partita(50),
-    numPlayers(20),
+    numPlayers(4),
     p_crossover(0.4f),
     p_selezione(0.6f),
     i(0),j(0),n(0),
@@ -65,6 +65,7 @@ Engine::Engine() :
 Engine::~Engine()
 {
     delete partita;
+    delete tree;
     //debug
     std::cout<<"deleting Engine ["<<istanze<<"]....";
     istanze--;
@@ -78,7 +79,7 @@ Engine::~Engine()
 void Engine::run()
 {
     run_flag = true;
-    QVector<PlayerPtr> result;
+    //QVector<PlayerPtr> result;
 
     while (run_flag)    //ciclo principale
     {
@@ -124,11 +125,12 @@ void Engine::run()
             std::cout<<std::endl;
             //debug
 
-            selezioneTorneo(p_selezione);
 
-
+            save();                          //salvo la generazione
             generation++;                    //aumento il numero di generazione
             emit GenChanged(generation);     //emetto il segnale
+
+            selezioneTorneo(p_selezione);
         }
         else
         {
@@ -502,4 +504,30 @@ PlayerPtr Engine::crossover(PlayerPtr a, PlayerPtr b, float p)
         copia->resetScore();
         return copia;
     }
+}
+
+/**
+ * @brief Engine::save funzione che salva lo stato dell'Engine
+ * @param s destinazine del file
+ * @return 0 se è andato tutto a buon fine
+ *        -1 se è stato impossibile salvare
+ */
+int Engine::save(QString s)
+{
+    QString file_name = QString(s+"Gen-%1.dat").arg(generation);
+    QFile file( file_name );
+    if( !file.open( QIODevice::WriteOnly ) )
+        return -1;
+
+    QDataStream stream( &file );
+    stream.setVersion( QDataStream::Qt_4_0 );
+    stream.setByteOrder(QDataStream::LittleEndian);
+    stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
+
+    QByteArray dat = serialize(players);
+
+    stream << dat;
+
+    file.close();
+    return 0;
 }

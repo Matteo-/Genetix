@@ -12,7 +12,8 @@ class Worker : public QObject {
     Q_OBJECT
 
 public:
-    Worker(QTcpSocket *socket, int id, QQueue<QByteArray> &t, QMutex &m);
+    Worker(QTcpSocket *socket, QQueue<QByteArray> &t, QMutex &m);
+    ~Worker();
     int getID();
     bool isWorking();
 
@@ -31,6 +32,7 @@ private:
 
     QTcpSocket *Socket;
     int Id;
+    static int static_id;
     bool working;
 
     QByteArray data;

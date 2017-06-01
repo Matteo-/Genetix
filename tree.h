@@ -14,6 +14,12 @@ struct nodo {
         mossa = m;
         turno = t;
     }
+
+    ~nodo() {
+        //TODO fare eliminazione ricorsiva di nodo
+        for(int i = 0; i < next.size(); i++) delete next[i];
+        delete this;
+    }
 };
 
 struct data {
@@ -28,6 +34,7 @@ class Tree
 {
 public:
     Tree();
+    ~Tree();
     QVector<data *>* open_game() const;
     void add(QVector<data *> &id);
 

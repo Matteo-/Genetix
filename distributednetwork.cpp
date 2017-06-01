@@ -4,18 +4,24 @@ DistributedNetwork::DistributedNetwork(int p, QObject *parent) :
     QTcpServer(parent)
 {
     port = p;
-    startServer();
+    startServer(p);
 }
 
-void DistributedNetwork::startServer()
+DistributedNetwork::~DistributedNetwork()
 {
-    if(!this->listen(QHostAddress::Any,port))
+    QMutexLocker locker(&worker_mutex);
+    for(int i = 0; i < workers.size(); i++) delete workers[i];
+}
+
+void DistributedNetwork::startServer(int p)
+{
+    if(!this->listen(QHostAddress::Any,p))
     {
         qDebug() << "Could not start server";
     }
     else
     {
-        qDebug() << "Listening to port " << port << "...";
+        qDebug() << "Listening to port " << p << "...";
     }
 
     connect(this, SIGNAL(newConnection()), this, SLOT(newClient()));
@@ -30,8 +36,7 @@ void DistributedNetwork::newClient()
 
     {
         QMutexLocker locker(&worker_mutex);
-        Worker *client = new Worker(clientConnection,
-                                    workers.size(), tasks, task_mutex);
+        Worker *client = new Worker(clientConnection, tasks, task_mutex);
         workers.append(client);
 
         connect(clientConnection, SIGNAL(readyRead()),

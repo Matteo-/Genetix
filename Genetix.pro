@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     random.cpp \
     worker.cpp \
     distributednetwork.cpp \
-    client.cpp
+    client.cpp \
+    clientwindow.cpp
 
 HEADERS  += mainwindow.h \
     umano.h \
@@ -46,7 +47,8 @@ HEADERS  += mainwindow.h \
     random.h \
     worker.h \
     distributednetwork.h \
-    client.h
+    client.h \
+    clientwindow.h
 
 FORMS    += mainwindow.ui
 

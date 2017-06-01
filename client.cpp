@@ -1,6 +1,6 @@
 #include "client.h"
 
-Client::Client(QString host, quint16 port, QObject *parent) : QObject(parent)
+Client::Client(QObject *parent) : QObject(parent)
 {
     data_size = 0;
     tcpSocket = new QTcpSocket();
@@ -10,9 +10,21 @@ Client::Client(QString host, quint16 port, QObject *parent) : QObject(parent)
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(displayError(QAbstractSocket::SocketError)));
 
-    tcpSocket->connectToHost(host, port);
+    connect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+            this, SLOT(state(QAbstractSocket::SocketState)));
+}
 
-    qDebug() << "[CLIENT] connesso";
+Client::~Client()
+{
+    tcpSocket->close();
+    delete tcpSocket;
+}
+
+void Client::connetti(QString host, quint16 port)
+{
+    emit output("in connessione...");
+
+    tcpSocket->connectToHost(host, port);
 }
 
 void Client::readData()
@@ -23,10 +35,11 @@ void Client::readData()
 //    in.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
     if (data_size == 0) {
-        if (tcpSocket->bytesAvailable() < (int)sizeof(quint16))
+        if (tcpSocket->bytesAvailable() < (int)sizeof(int))
             return;
 
         in >> data_size;
+        emit output("nuovo pacchetto in arrivo...");
     }
 
     if (tcpSocket->bytesAvailable() < data_size)
@@ -35,7 +48,8 @@ void Client::readData()
     in >> data;
 
     //debug
-    qDebug() << "[CLIENT] data recived...";
+    //qDebug() << "[CLIENT] data recived...";
+    emit output("   ricevuto\n");
     //debug
 
     processData();
@@ -43,23 +57,27 @@ void Client::readData()
 
 void Client::displayError(QAbstractSocket::SocketError socketError)
 {
+    QWidget *avviso = new QWidget();
+
+    //TODO attenzione memory leak trovare un modo per eliminare avviso
+
     switch (socketError) {
     case QAbstractSocket::RemoteHostClosedError:
         break;
     case QAbstractSocket::HostNotFoundError:
-        QMessageBox::information(new QWidget, tr("Client"),
+        QMessageBox::information(avviso, tr("Client"),
                                  tr("The host was not found. Please check the "
                                     "host name and port settings."));
         break;
     case QAbstractSocket::ConnectionRefusedError:
-        QMessageBox::information(new QWidget, tr("Client"),
+        QMessageBox::information(avviso, tr("Client"),
                                  tr("The connection was refused by the peer. "
                                     "Make sure the Genetix server is running, "
                                     "and check that the host name and port "
                                     "settings are correct."));
         break;
     default:
-        QMessageBox::information(new QWidget, tr("Client"),
+        QMessageBox::information(avviso, tr("Client"),
                                  tr("The following error occurred: %1.")
                                  .arg(tcpSocket->errorString()));
     }
@@ -67,9 +85,11 @@ void Client::displayError(QAbstractSocket::SocketError socketError)
 
 void Client::processData()
 {
-//    qDebug() << "process: " << data;
+    emit output("inizio elaborazione dati...");
 
     Game g;
+
+    connect(&g, SIGNAL(output(QString)), this, SLOT(getOutput(QString)));
 
     /*
      * TODO controllare possibili errori di creazione giocatore
@@ -77,7 +97,7 @@ void Client::processData()
      */
     QVector<PlayerPtr> p = Engine::deserialize(data);
 
-    int winner = g.run(p[0], p[1]);
+    int winner = g.run({p[0], p[1]});
 
     QDataStream out(&result, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
@@ -115,6 +135,7 @@ void Client::processData()
 
 void Client::sendResult(){
     /* invio i dati al server */
+    emit output("   invio risultato...");
 
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -131,5 +152,19 @@ void Client::sendResult(){
     if( tcpSocket->write(block) == -1)
     {
         qDebug() << "[ERRORE] trasmissione dati";
+        emit output("   [ERRORE] trasmissione dati");
     }
+
+    emit output("       OK\n");
+}
+
+void Client::state(QAbstractSocket::SocketState s)
+{
+    if(s == 3) emit output("   connesso\n");
+    emit status(s);
+}
+
+void Client::getOutput(QString s)
+{
+    emit output(s);
 }

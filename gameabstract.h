@@ -9,15 +9,12 @@ class GameAbstract : public QObject
 {
     //Q_OBJECT
 public:
-    virtual int run(PlayerPtr g1, PlayerPtr g2, Tree *) = 0;
+    virtual int run(QVector<PlayerPtr> giocatori, Tree *) = 0;
     virtual ~GameAbstract() {}
 protected:
 
-//signals:
-//    virtual void mossaErrata() = 0;
-//    virtual void mossaValida(Player*) = 0;
-//    virtual void vittoria(Player*) = 0;
-//    virtual void pareggio(Player*,Player*) = 0;
+signals:
+    virtual void output(QString s) = 0;
 
 public slots:
     virtual void stop() = 0;

@@ -34,7 +34,7 @@ Game::~Game()
  *         2 in caso di parità
  *        -1 se c'è stato un errore
  */
-int Game::run(PlayerPtr g1, PlayerPtr g2, Tree *tree)
+int Game::run(QVector<PlayerPtr> giocatori, Tree *tree)
 {
     QVector<data*> *id; //game vector in tree
     if(tree)
@@ -46,9 +46,9 @@ int Game::run(PlayerPtr g1, PlayerPtr g2, Tree *tree)
 
     //aggiungo i giocatori
     //array nativo
-    QVector<PlayerPtr> giocatori(2);
-    giocatori[0] = g1;
-    giocatori[1] = g2;
+//    QVector<PlayerPtr> giocatori(2);
+//    giocatori[0] = g1;
+//    giocatori[1] = g2;
 
     //inizializzo il campo da gioco
     bantumi.inizializza();
@@ -65,7 +65,11 @@ int Game::run(PlayerPtr g1, PlayerPtr g2, Tree *tree)
             mossa = giocatori[turno]->calcolaMossa(bantumi, turno);
             controllo = bantumi.eseguiMossa(turno, mossa);
 
-            cout << turno << mossa << controllo << " " << flush; //debug
+            QString mex = QString::number(turno)+
+                          QString::number(mossa)+
+                          QString::number(controllo);
+            emit output(mex);
+            //cout << turno << mossa << controllo << " " << flush; //debug
 
             if(tree)
             {

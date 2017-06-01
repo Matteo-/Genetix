@@ -28,6 +28,7 @@ public:
     ~Engine();
     void stop();
     void run();
+    int save(QString s = "saves/");
     static QByteArray serialize(QVector<PlayerPtr> p);
     static QVector<PlayerPtr> deserialize(QByteArray data);
 
@@ -64,12 +65,11 @@ private:
     float p_selezione;
     int i,j,n;                              //variabili di stato ciclo principale
     GameAbstract *partita;
-    QVector<PlayerPtr> players;              //giocatori
+    QVector<PlayerPtr> players;             //giocatori
     PlayerPtr best;
     static const float score_vittoria;
     static const float score_pareggio;
     static const float score_sconfitta;
-    static const float score_mossa_valida;
     static const QVector<int> topologia;
     static int istanze;                    //debug memory leak
     Tree *tree;

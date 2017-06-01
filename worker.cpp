@@ -1,13 +1,23 @@
 #include "worker.h"
 
-Worker::Worker(QTcpSocket *socket, int id, QQueue<QByteArray> &t, QMutex &m):
+int Worker::static_id = 0;
+
+Worker::Worker(QTcpSocket *socket, QQueue<QByteArray> &t, QMutex &m):
     tasks(t), mutex(m)
 {
     Socket = socket;
-    Id = id;
+    Id = static_id;
+    static_id++;
     working = false;
     result_size = 0;
     getTask();
+}
+
+Worker::~Worker()
+{
+    Socket->disconnectFromHost();
+    Socket->close();
+    delete Socket;
 }
 
 void Worker::readClient()

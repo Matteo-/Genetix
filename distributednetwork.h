@@ -9,13 +9,21 @@
 #include "worker.h"
 #include "sleeper.h"
 
+/**
+ * @brief The DistributedNetwork class
+ *        Gestisce il sistema di calcolo distribuito
+ *
+ *        LIMITAZIONI: sia questa Classe che la Classe Client
+ *                     devono essere eseguiti su architetture a 64 bit
+ */
 class DistributedNetwork : public QTcpServer
 {
     Q_OBJECT
 public:
     explicit DistributedNetwork(int port = 2501, QObject *parent = 0);
+    ~DistributedNetwork();
 
-    void startServer();
+    void startServer(int p);
 
     /*
      * invia un pacchetto dati al primo client libero disponibile

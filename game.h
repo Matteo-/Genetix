@@ -18,13 +18,14 @@ class Game : public GameAbstract//, public QObject
 public:
     explicit Game(Engine *en = 0);
     ~Game();
-    int run(PlayerPtr g1, PlayerPtr g2, Tree *tree = nullptr);
+    int run(QVector<PlayerPtr> giocatori, Tree *tree = nullptr);
 
 signals:
-    void mossaErrata();
-    void mossaValida(PlayerPtr);
-    void vittoria(PlayerPtr);
-    void pareggio(PlayerPtr,PlayerPtr);
+    void output(QString s);
+//    void mossaErrata();
+//    void mossaValida(PlayerPtr);
+//    void vittoria(PlayerPtr);
+//    void pareggio(PlayerPtr,PlayerPtr);
 
 public slots:
     void stop();
