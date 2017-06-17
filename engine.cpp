@@ -7,12 +7,13 @@
 #include "sleeper.h"
 #include <math.h>
 #include <QFile>
+#include <QDir>
 using namespace std;
 
 int Engine::istanze = 0;
-const float Engine::score_vittoria = 10.0f;
-const float Engine::score_pareggio = 5.0f;
-const float Engine::score_sconfitta = -0.0f;
+const float Engine::score_vittoria = 1.0f;
+const float Engine::score_pareggio = 1.0f;
+const float Engine::score_sconfitta = 1.0f;
 const QVector<int> Engine::topologia = {5,1};
 
 /**
@@ -23,7 +24,7 @@ Engine::Engine() :
     run_flag(false),
     delay_gen(1),
     delay_partita(50),
-    numPlayers(4),
+    numPlayers(2),
     p_crossover(0.4f),
     p_selezione(0.6f),
     i(0),j(0),n(0),
@@ -224,7 +225,7 @@ void Engine::fitness(QByteArray &elab)
     qDebug() << "[fitness] fine";
 }
 
-QByteArray Engine::serialize(QVector<PlayerPtr> p)
+QByteArray Engine::serialize(const QVector<PlayerPtr> &p)
 {
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
@@ -512,10 +513,21 @@ PlayerPtr Engine::crossover(PlayerPtr a, PlayerPtr b, float p)
  * @return 0 se è andato tutto a buon fine
  *        -1 se è stato impossibile salvare
  */
-int Engine::save(QString s)
+int Engine::save(QString folder)
 {
-    QString file_name = QString(s+"Gen-%1.dat").arg(generation);
-    QFile file( file_name );
+    /*
+     * controllo se la cartella esiste in caso contrari la creo
+     * se non posso crearla termino il salvataggio
+     */
+    if(!QDir(folder).exists())
+        if(!QDir().mkdir(folder))
+            return -1;
+
+    /*
+     * salvo la generazione
+     */
+    QString gen_file = QString(folder+"/Gen-%1.dat").arg(generation);
+    QFile file( gen_file );
     if( !file.open( QIODevice::WriteOnly ) )
         return -1;
 
@@ -525,9 +537,25 @@ int Engine::save(QString s)
     stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
     QByteArray dat = serialize(players);
-
     stream << dat;
-
     file.close();
+
+//    /*
+//     * salvo il migliore della generazione
+//     */
+//    QString best_name_file = QString(folder+"/Best-Gen-%1.dat").arg(generation);
+//    QFile best_file( best_name_file );
+//    if( !best_file.open( QIODevice::WriteOnly ) )
+//        return -1;
+
+//    QDataStream stream2( &best_file );
+//    stream2.setVersion( QDataStream::Qt_4_0 );
+//    stream2.setByteOrder(QDataStream::LittleEndian);
+//    stream2.setFloatingPointPrecision(QDataStream::SinglePrecision);
+
+//    QByteArray dat2 = serialize({best});
+//    stream2 << dat2;
+//    best_file.close();
+
     return 0;
 }

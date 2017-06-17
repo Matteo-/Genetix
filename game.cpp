@@ -67,7 +67,7 @@ int Game::run(QVector<PlayerPtr> giocatori, Tree *tree)
 
             QString mex = QString::number(turno)+
                           QString::number(mossa)+
-                          QString::number(controllo);
+                          QString::number(controllo)+" ";
             emit output(mex);
             //cout << turno << mossa << controllo << " " << flush; //debug
 

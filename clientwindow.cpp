@@ -17,14 +17,15 @@ ClientWindow::ClientWindow(QWidget *parent) : QWidget(parent)
 
     bConnect = new QPushButton("Connect", this);
 
-    QTextEdit *text_output = new QTextEdit(this);
+    text_output = new QTextEdit(this);
     text_output->setReadOnly(true);
     QPalette p = text_output->palette();
     p.setColor(QPalette::Base, QColor(0, 0, 0));
     text_output->setPalette(p);
 //    text_output->setTextColor(QColor(15, 30, 242));   //blue
-//    text_output->setTextColor(QColor(102, 250, 57));  //verde
-    text_output->setTextColor(QColor(201, 201, 201)); //grigio
+    text_output->setTextColor(QColor(102, 250, 57));  //verde
+//    text_output->setTextColor(QColor(201, 201, 201)); //grigio
+
 
     status = new QLabel("Status: Disconnected", this);
     status->setDisabled(true);
@@ -42,7 +43,10 @@ ClientWindow::ClientWindow(QWidget *parent) : QWidget(parent)
     client = new Client();
 
     connect(client, SIGNAL(output(QString)),
-            text_output, SLOT(append(QString)));
+            this, SLOT(UpdateLog(QString)));
+
+//    connect(text_output, SIGNAL(textChanged()),
+//            text_output, SLOT(repaint()));
 
     connect(bConnect, SIGNAL(clicked(bool)), this, SLOT(connetti()));
 
@@ -77,4 +81,13 @@ void ClientWindow::connectionState(QAbstractSocket::SocketState s)
     default:
         break;
     }
+}
+
+void ClientWindow::UpdateLog(QString log)
+{
+    text_output->insertPlainText(log);
+    QTextCursor c =  text_output->textCursor();
+    c.movePosition(QTextCursor::End);
+    text_output->setTextCursor(c);
+    text_output->repaint();
 }

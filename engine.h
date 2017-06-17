@@ -28,8 +28,8 @@ public:
     ~Engine();
     void stop();
     void run();
-    int save(QString s = "saves/");
-    static QByteArray serialize(QVector<PlayerPtr> p);
+    int save(QString folder = "saves");
+    static QByteArray serialize(const QVector<PlayerPtr> &p);
     static QVector<PlayerPtr> deserialize(QByteArray data);
 
 

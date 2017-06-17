@@ -29,7 +29,10 @@ SOURCES += main.cpp\
     worker.cpp \
     distributednetwork.cpp \
     client.cpp \
-    clientwindow.cpp
+    clientwindow.cpp \
+    initwindow.cpp \
+    qcustomplot.cpp \
+    genetixwindow.cpp
 
 HEADERS  += mainwindow.h \
     umano.h \
@@ -48,8 +51,13 @@ HEADERS  += mainwindow.h \
     worker.h \
     distributednetwork.h \
     client.h \
-    clientwindow.h
+    clientwindow.h \
+    initwindow.h \
+    qcustomplot.h \
+    genetixwindow.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    initwindow.ui \
+    genetixwindow.ui
 
 DISTFILES +=

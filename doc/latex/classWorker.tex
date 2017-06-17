@@ -1,0 +1,61 @@
+\hypertarget{classWorker}{}\section{Worker Class Reference}
+\label{classWorker}\index{Worker@{Worker}}
+
+
+Inheritance diagram for Worker\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=133pt]{classWorker__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Worker\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=133pt]{classWorker__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Slots}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classWorker_acc404e567293928e2af696bf2ea70999}\label{classWorker_acc404e567293928e2af696bf2ea70999}} 
+void {\bfseries read\+Client} ()
+\item 
+\mbox{\Hypertarget{classWorker_a0917b71f0412691dcab437af6fedb8e6}\label{classWorker_a0917b71f0412691dcab437af6fedb8e6}} 
+void {\bfseries get\+Task} ()
+\item 
+\mbox{\Hypertarget{classWorker_a7c7a418a001835a9ac760b20bd0037ae}\label{classWorker_a7c7a418a001835a9ac760b20bd0037ae}} 
+void {\bfseries disconnected} ()
+\end{DoxyCompactItemize}
+\subsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classWorker_a1227c92cf569cf361a7a69f13a2e3e1b}\label{classWorker_a1227c92cf569cf361a7a69f13a2e3e1b}} 
+void {\bfseries task\+Complete} (Q\+Byte\+Array \&result)
+\item 
+\mbox{\Hypertarget{classWorker_a94421023a53a3c39d2913ba64980571d}\label{classWorker_a94421023a53a3c39d2913ba64980571d}} 
+void {\bfseries disconnected} (int id, Q\+Byte\+Array \&\hyperlink{structdata}{data})
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classWorker_af1f07301bce34c5253ac2c2a86945154}\label{classWorker_af1f07301bce34c5253ac2c2a86945154}} 
+{\bfseries Worker} (Q\+Tcp\+Socket $\ast$socket, Q\+Queue$<$ Q\+Byte\+Array $>$ \&t, Q\+Mutex \&m)
+\item 
+\mbox{\Hypertarget{classWorker_a0e11ac035f24a638ab7251f3a3961ac1}\label{classWorker_a0e11ac035f24a638ab7251f3a3961ac1}} 
+int {\bfseries get\+ID} ()
+\item 
+\mbox{\Hypertarget{classWorker_aea9ff3ae949ac3a55ceb51999605887a}\label{classWorker_aea9ff3ae949ac3a55ceb51999605887a}} 
+bool {\bfseries is\+Working} ()
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/matteo/\+Progetti/\+Genetix/worker.\+h\item 
+/home/matteo/\+Progetti/\+Genetix/worker.\+cpp\end{DoxyCompactItemize}

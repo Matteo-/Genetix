@@ -19,10 +19,12 @@ private:
     QLineEdit *port;
     QPushButton *bConnect;
     QLabel *status;
+    QTextEdit *text_output;
 
 signals:
 
 public slots:
+    void UpdateLog(QString log);
     void connetti();
     void connectionState(QAbstractSocket::SocketState s);
 };

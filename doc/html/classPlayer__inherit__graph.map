@@ -1,0 +1,6 @@
+<map id="Player" name="Player">
+<area shape="rect" id="node2" href="$classAI.html" title="AI" alt="" coords="5,80,44,107"/>
+<area shape="rect" id="node3" href="$classRandom.html" title="Random" alt="" coords="68,80,139,107"/>
+<area shape="rect" id="node4" href="$classTester.html" title="Tester" alt="" coords="163,80,222,107"/>
+<area shape="rect" id="node5" href="$classUmano.html" title="Umano" alt="" coords="246,80,310,107"/>
+</map>

@@ -129,6 +129,13 @@ void DistributedNetwork::getElabData(QByteArray &result)
 
 void DistributedNetwork::clientDisconnected(int id, QByteArray &data)
 {
+    // se i dati non sono vuoti li reimmetto nelle task
+    if(!data.isEmpty())
+    {
+        qDebug() << "ributto in coda: " << data;
+        distribute(data);
+    }
+
     {
         QMutexLocker locker(&worker_mutex);
         for(int i = 0; i < workers.size(); i++) {
@@ -136,6 +143,10 @@ void DistributedNetwork::clientDisconnected(int id, QByteArray &data)
             {
                 Worker *w = workers[i];
                 workers.remove(i);
+                //debug
+                qDebug() << "[clientdisc.] worker rimosso id: " << id;
+                qDebug() << "[clientdisc.] new workers size: " << workers.size();
+                //debug
                 delete w;
                 break;
             }
@@ -151,11 +162,4 @@ void DistributedNetwork::clientDisconnected(int id, QByteArray &data)
         }
     }
     //debug
-
-    // se i dati non sono vuoti li reimmetto nelle task
-    if(!data.isEmpty())
-    {
-        qDebug() << "ributto in coda: " << data;
-        distribute(data);
-    }
 }

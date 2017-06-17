@@ -1,0 +1,65 @@
+\hypertarget{classPlayer}{}\section{Player Class Reference}
+\label{classPlayer}\index{Player@{Player}}
+
+
+classe astratta che desscrive l\textquotesingle{}interfaccia pubblica di un giocatore  
+
+
+
+
+{\ttfamily \#include $<$player.\+h$>$}
+
+
+
+Inheritance diagram for Player\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=309pt]{classPlayer__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classPlayer_a444eb8f2a19debbee8d6dd4a48d846c2}\label{classPlayer_a444eb8f2a19debbee8d6dd4a48d846c2}} 
+virtual int {\bfseries calcola\+Mossa} (const \hyperlink{classTable}{Table} \&table, int turno) const =0
+\item 
+\mbox{\Hypertarget{classPlayer_a776326d11b142ce77092f4ebc8f6e6ad}\label{classPlayer_a776326d11b142ce77092f4ebc8f6e6ad}} 
+virtual void {\bfseries add\+Score} (float s)=0
+\item 
+\mbox{\Hypertarget{classPlayer_aca94f2f4dd3e054c539ecb4c0ac3acda}\label{classPlayer_aca94f2f4dd3e054c539ecb4c0ac3acda}} 
+virtual bool {\bfseries operator$<$} (const \hyperlink{classPlayer}{Player} \&) const =0
+\item 
+\mbox{\Hypertarget{classPlayer_a9c5101d60d359563262426240fdd31c0}\label{classPlayer_a9c5101d60d359563262426240fdd31c0}} 
+virtual float {\bfseries get\+Score} () const =0
+\item 
+\mbox{\Hypertarget{classPlayer_ab8cde15b9f6f3a8c32f310e0ea3e3ae3}\label{classPlayer_ab8cde15b9f6f3a8c32f310e0ea3e3ae3}} 
+virtual int {\bfseries get\+ID} () const =0
+\item 
+\mbox{\Hypertarget{classPlayer_a8a055205512ac51a6bf1b3159000ac7f}\label{classPlayer_a8a055205512ac51a6bf1b3159000ac7f}} 
+virtual void {\bfseries set\+ID} (int=-\/1)=0
+\item 
+\mbox{\Hypertarget{classPlayer_a3bef660a18e4a1366235235b342394ef}\label{classPlayer_a3bef660a18e4a1366235235b342394ef}} 
+virtual void {\bfseries reset\+Score} ()=0
+\item 
+\mbox{\Hypertarget{classPlayer_aad827fcb0d6d140f5188aae38dd95c59}\label{classPlayer_aad827fcb0d6d140f5188aae38dd95c59}} 
+virtual void {\bfseries win} (float s)=0
+\item 
+\mbox{\Hypertarget{classPlayer_a0a3d28e44143a56af896aaa426f9bd30}\label{classPlayer_a0a3d28e44143a56af896aaa426f9bd30}} 
+virtual void {\bfseries lose} (float s)=0
+\item 
+\mbox{\Hypertarget{classPlayer_a2f3a54c4f93737823789b6072a5dfc45}\label{classPlayer_a2f3a54c4f93737823789b6072a5dfc45}} 
+virtual void {\bfseries parity} (float s)=0
+\item 
+\mbox{\Hypertarget{classPlayer_a455902b4c74ae9e63cc86d941bbd2f76}\label{classPlayer_a455902b4c74ae9e63cc86d941bbd2f76}} 
+virtual \hyperlink{structstat}{stat} {\bfseries statistics} () const =0
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+classe astratta che desscrive l\textquotesingle{}interfaccia pubblica di un giocatore 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/matteo/\+Progetti/\+Genetix/player.\+h\end{DoxyCompactItemize}

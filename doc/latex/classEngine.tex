@@ -1,0 +1,96 @@
+\hypertarget{classEngine}{}\section{Engine Class Reference}
+\label{classEngine}\index{Engine@{Engine}}
+
+
+Inheritance diagram for Engine\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=134pt]{classEngine__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Engine\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=134pt]{classEngine__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Slots}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classEngine_a5b393cd5aaebe5eb8a5b225ee31fa6bb}\label{classEngine_a5b393cd5aaebe5eb8a5b225ee31fa6bb}} 
+void {\bfseries run\+Event} ()
+\item 
+\mbox{\Hypertarget{classEngine_a98956a88f9a0a7e8fedf77cf9c246dd1}\label{classEngine_a98956a88f9a0a7e8fedf77cf9c246dd1}} 
+void {\bfseries stop\+Event} ()
+\item 
+\mbox{\Hypertarget{classEngine_a16bca5737248e72fb0ba519f75adfed0}\label{classEngine_a16bca5737248e72fb0ba519f75adfed0}} 
+void {\bfseries set\+Delay} (int)
+\item 
+\mbox{\Hypertarget{classEngine_ac2275923326b242207830b6a99d37b4a}\label{classEngine_ac2275923326b242207830b6a99d37b4a}} 
+void {\bfseries fitness} (Q\+Byte\+Array \&elab)
+\end{DoxyCompactItemize}
+\subsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classEngine_a0ce8ae215f05529c846d759f73e3ada9}\label{classEngine_a0ce8ae215f05529c846d759f73e3ada9}} 
+void {\bfseries Gen\+Changed} (int new\+Gen)
+\item 
+\mbox{\Hypertarget{classEngine_a7dfc2258b3a03132a049c8ecfb2d449f}\label{classEngine_a7dfc2258b3a03132a049c8ecfb2d449f}} 
+void {\bfseries stop\+Game} ()
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classEngine_a8c98683b0a3aa28d8ab72a8bcd0d52f2}\label{classEngine_a8c98683b0a3aa28d8ab72a8bcd0d52f2}} 
+\hyperlink{classEngine_a8c98683b0a3aa28d8ab72a8bcd0d52f2}{Engine} ()
+\begin{DoxyCompactList}\small\item\em costruttore \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classEngine_ac88ada17b33bc5ddaf6bb73e0cdc67f3}\label{classEngine_ac88ada17b33bc5ddaf6bb73e0cdc67f3}} 
+void {\bfseries stop} ()
+\item 
+\mbox{\Hypertarget{classEngine_a1a210cf30d6bd330b3649439ecd6d6cc}\label{classEngine_a1a210cf30d6bd330b3649439ecd6d6cc}} 
+void \hyperlink{classEngine_a1a210cf30d6bd330b3649439ecd6d6cc}{run} ()
+\begin{DoxyCompactList}\small\item\em ciclo principale dell\textquotesingle{}algoritmo genetico \end{DoxyCompactList}\item 
+int \hyperlink{classEngine_a28dd4d5ff6c82749e651a0254076812a}{save} (Q\+String s=\char`\"{}saves/\char`\"{})
+\begin{DoxyCompactList}\small\item\em \hyperlink{classEngine_a28dd4d5ff6c82749e651a0254076812a}{Engine\+::save} funzione che salva lo stato dell\textquotesingle{}\hyperlink{classEngine}{Engine}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classEngine_a33c8a56ebe6b872d11f7606035607ce9}\label{classEngine_a33c8a56ebe6b872d11f7606035607ce9}} 
+static Q\+Byte\+Array {\bfseries serialize} (Q\+Vector$<$ Player\+Ptr $>$ p)
+\item 
+\mbox{\Hypertarget{classEngine_aabc5c263d3ec8c61af7656be961af104}\label{classEngine_aabc5c263d3ec8c61af7656be961af104}} 
+static Q\+Vector$<$ Player\+Ptr $>$ {\bfseries deserialize} (Q\+Byte\+Array \hyperlink{structdata}{data})
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classEngine_a28dd4d5ff6c82749e651a0254076812a}\label{classEngine_a28dd4d5ff6c82749e651a0254076812a}} 
+\index{Engine@{Engine}!save@{save}}
+\index{save@{save}!Engine@{Engine}}
+\subsubsection{\texorpdfstring{save()}{save()}}
+{\footnotesize\ttfamily int Engine\+::save (\begin{DoxyParamCaption}\item[{Q\+String}]{s = {\ttfamily \char`\"{}saves/\char`\"{}} }\end{DoxyParamCaption})}
+
+
+
+\hyperlink{classEngine_a28dd4d5ff6c82749e651a0254076812a}{Engine\+::save} funzione che salva lo stato dell\textquotesingle{}\hyperlink{classEngine}{Engine}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s} & destinazine del file \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+0 se è andato tutto a buon fine -\/1 se è stato impossibile salvare 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/matteo/\+Progetti/\+Genetix/engine.\+h\item 
+/home/matteo/\+Progetti/\+Genetix/engine.\+cpp\end{DoxyCompactItemize}

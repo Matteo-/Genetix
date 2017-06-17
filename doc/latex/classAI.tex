@@ -1,0 +1,117 @@
+\hypertarget{classAI}{}\section{AI Class Reference}
+\label{classAI}\index{AI@{AI}}
+
+
+Inheritance diagram for AI\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=124pt]{classAI__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for AI\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=124pt]{classAI__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classAI_a960e91a972f13b9ee7e9348a2afa6e77}\label{classAI_a960e91a972f13b9ee7e9348a2afa6e77}} 
+{\bfseries AI} (\hyperlink{classBrain}{Brain} $\ast$b, int id=-\/1)
+\item 
+int \hyperlink{classAI_a5ddd05acc3177d4e7a756f7cfc2c3f64}{calcola\+Mossa} (const \hyperlink{classTable}{Table} \&table, int turno) const
+\begin{DoxyCompactList}\small\item\em \hyperlink{classAI_a5ddd05acc3177d4e7a756f7cfc2c3f64}{A\+I\+::calcola\+Mossa}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classAI_ae83a9db8d9b08b349bc8e089155ab8b4}\label{classAI_ae83a9db8d9b08b349bc8e089155ab8b4}} 
+void {\bfseries add\+Score} (float s)
+\item 
+\mbox{\Hypertarget{classAI_ace2cfc3e36b418f1517965c49941fc82}\label{classAI_ace2cfc3e36b418f1517965c49941fc82}} 
+void {\bfseries win} (float s)
+\item 
+\mbox{\Hypertarget{classAI_a1f9260c8e7d05740078f022fac8e41f7}\label{classAI_a1f9260c8e7d05740078f022fac8e41f7}} 
+void {\bfseries lose} (float s)
+\item 
+\mbox{\Hypertarget{classAI_a2d48915a47b0ba41ab39e7e1d778a861}\label{classAI_a2d48915a47b0ba41ab39e7e1d778a861}} 
+void {\bfseries parity} (float s)
+\item 
+\mbox{\Hypertarget{classAI_a4a2fca8f4558c5eefca6e7a8f72d953f}\label{classAI_a4a2fca8f4558c5eefca6e7a8f72d953f}} 
+\hyperlink{structstat}{stat} {\bfseries statistics} () const
+\item 
+\mbox{\Hypertarget{classAI_ac4c6a612da44dc592114d29daf9a9dea}\label{classAI_ac4c6a612da44dc592114d29daf9a9dea}} 
+float {\bfseries get\+Score} () const
+\item 
+\mbox{\Hypertarget{classAI_aa7e70fc5d035c94be8ee88a928cfb005}\label{classAI_aa7e70fc5d035c94be8ee88a928cfb005}} 
+int {\bfseries get\+ID} () const
+\item 
+\mbox{\Hypertarget{classAI_a5195ab988169b68281a423d3eed1911f}\label{classAI_a5195ab988169b68281a423d3eed1911f}} 
+void {\bfseries set\+ID} (int id=-\/1)
+\item 
+\mbox{\Hypertarget{classAI_a4adef146c29d24ac5a3c5a10f1315834}\label{classAI_a4adef146c29d24ac5a3c5a10f1315834}} 
+void {\bfseries reset\+Score} ()
+\item 
+\mbox{\Hypertarget{classAI_a07c09b5f832f252e117cbdf16e7ae879}\label{classAI_a07c09b5f832f252e117cbdf16e7ae879}} 
+bool {\bfseries operator$<$} (const \hyperlink{classPlayer}{Player} \&) const
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classAI_a864dc398addb033871e745bdd531375b}\label{classAI_a864dc398addb033871e745bdd531375b}} 
+static int {\bfseries max\+Value\+Of} (const Q\+Vector$<$ float $>$ v)
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classAI_a603488eb9c51e35d098875bfef26ae6b}\label{classAI_a603488eb9c51e35d098875bfef26ae6b}} 
+\hyperlink{classAI}{AI} $\ast$ {\bfseries operator+} (const \hyperlink{classAI}{AI} \&, const \hyperlink{classAI}{AI} \&)
+\item 
+\mbox{\Hypertarget{classAI_a4e43a95ad357cdc9a98735958b0c6fa4}\label{classAI_a4e43a95ad357cdc9a98735958b0c6fa4}} 
+bool {\bfseries operator$<$} (const \hyperlink{classAI}{AI} \&a, const \hyperlink{classAI}{AI} \&b)
+\item 
+\mbox{\Hypertarget{classAI_a8685adc9a5fb5397423dd97deef7e733}\label{classAI_a8685adc9a5fb5397423dd97deef7e733}} 
+bool {\bfseries operator$<$=} (const \hyperlink{classAI}{AI} \&a, const \hyperlink{classAI}{AI} \&b)
+\item 
+\mbox{\Hypertarget{classAI_a83c936475bdbb2c3b7a615f26c0b0b20}\label{classAI_a83c936475bdbb2c3b7a615f26c0b0b20}} 
+bool {\bfseries operator$>$} (const \hyperlink{classAI}{AI} \&a, const \hyperlink{classAI}{AI} \&b)
+\item 
+\mbox{\Hypertarget{classAI_a9f2bf11a0a8c5b305e4dfd0bf0b9533d}\label{classAI_a9f2bf11a0a8c5b305e4dfd0bf0b9533d}} 
+bool {\bfseries operator$>$=} (const \hyperlink{classAI}{AI} \&a, const \hyperlink{classAI}{AI} \&b)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classAI_a5ddd05acc3177d4e7a756f7cfc2c3f64}\label{classAI_a5ddd05acc3177d4e7a756f7cfc2c3f64}} 
+\index{AI@{AI}!calcola\+Mossa@{calcola\+Mossa}}
+\index{calcola\+Mossa@{calcola\+Mossa}!AI@{AI}}
+\subsubsection{\texorpdfstring{calcola\+Mossa()}{calcolaMossa()}}
+{\footnotesize\ttfamily int A\+I\+::calcola\+Mossa (\begin{DoxyParamCaption}\item[{const \hyperlink{classTable}{Table} \&}]{table,  }\item[{int}]{turno }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+\hyperlink{classAI_a5ddd05acc3177d4e7a756f7cfc2c3f64}{A\+I\+::calcola\+Mossa}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tavolo} & \\
+\hline
+{\em turno} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+ritorna la mossa con la valutazione migliore 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classPlayer}{Player}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/matteo/\+Progetti/\+Genetix/ai.\+h\item 
+/home/matteo/\+Progetti/\+Genetix/ai.\+cpp\end{DoxyCompactItemize}

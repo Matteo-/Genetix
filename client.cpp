@@ -49,7 +49,7 @@ void Client::readData()
 
     //debug
     //qDebug() << "[CLIENT] data recived...";
-    emit output("   ricevuto\n");
+    emit output("ricevuto\n");
     //debug
 
     processData();
@@ -85,7 +85,7 @@ void Client::displayError(QAbstractSocket::SocketError socketError)
 
 void Client::processData()
 {
-    emit output("inizio elaborazione dati...");
+    emit output("inizio elaborazione dati...\n");
 
     Game g;
 
@@ -98,6 +98,8 @@ void Client::processData()
     QVector<PlayerPtr> p = Engine::deserialize(data);
 
     int winner = g.run({p[0], p[1]});
+
+    emit output("OK\n");
 
     QDataStream out(&result, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
@@ -135,7 +137,7 @@ void Client::processData()
 
 void Client::sendResult(){
     /* invio i dati al server */
-    emit output("   invio risultato...");
+    emit output("invio risultato...");
 
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -152,15 +154,15 @@ void Client::sendResult(){
     if( tcpSocket->write(block) == -1)
     {
         qDebug() << "[ERRORE] trasmissione dati";
-        emit output("   [ERRORE] trasmissione dati");
+        emit output("[ERRORE] trasmissione dati\n");
     }
 
-    emit output("       OK\n");
+    emit output("OK\n");
 }
 
 void Client::state(QAbstractSocket::SocketState s)
 {
-    if(s == 3) emit output("   connesso\n");
+    if(s == 3) emit output("connesso\n");
     emit status(s);
 }
 

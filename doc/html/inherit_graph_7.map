@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classPlayer.html" title="classe astratta che desscrive l&#39;interfaccia pubblica di un giocatore " alt="" coords="5,81,64,108"/>
+<area shape="rect" id="node2" href="$classAI.html" title="AI" alt="" coords="128,5,167,32"/>
+<area shape="rect" id="node3" href="$classRandom.html" title="Random" alt="" coords="112,56,183,83"/>
+<area shape="rect" id="node4" href="$classTester.html" title="Tester" alt="" coords="118,107,177,133"/>
+<area shape="rect" id="node5" href="$classUmano.html" title="Umano" alt="" coords="115,157,179,184"/>
+</map>

@@ -1,0 +1,78 @@
+\hypertarget{classDistributedNetwork}{}\section{Distributed\+Network Class Reference}
+\label{classDistributedNetwork}\index{Distributed\+Network@{Distributed\+Network}}
+
+
+The \hyperlink{classDistributedNetwork}{Distributed\+Network} class Gestisce il sistema di calcolo distribuito.  
+
+
+
+
+{\ttfamily \#include $<$distributednetwork.\+h$>$}
+
+
+
+Inheritance diagram for Distributed\+Network\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=181pt]{classDistributedNetwork__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Distributed\+Network\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=181pt]{classDistributedNetwork__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Slots}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classDistributedNetwork_a55dcd6497ede05e34ead0f59c942d095}\label{classDistributedNetwork_a55dcd6497ede05e34ead0f59c942d095}} 
+void {\bfseries new\+Client} ()
+\item 
+\mbox{\Hypertarget{classDistributedNetwork_a54ee7dae7cbece114adc5c446cbf2e3a}\label{classDistributedNetwork_a54ee7dae7cbece114adc5c446cbf2e3a}} 
+void {\bfseries get\+Elab\+Data} (Q\+Byte\+Array \&result)
+\item 
+\mbox{\Hypertarget{classDistributedNetwork_ab9dc432472463ee387e1b5d40279f8da}\label{classDistributedNetwork_ab9dc432472463ee387e1b5d40279f8da}} 
+void {\bfseries client\+Disconnected} (int id, Q\+Byte\+Array \&\hyperlink{structdata}{data})
+\end{DoxyCompactItemize}
+\subsection*{Signals}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classDistributedNetwork_ac73f8c68da9510d8b1652328cdf0cccf}\label{classDistributedNetwork_ac73f8c68da9510d8b1652328cdf0cccf}} 
+void {\bfseries newtask} ()
+\item 
+\mbox{\Hypertarget{classDistributedNetwork_a162f4648ab9084f44c23d1213884f6d3}\label{classDistributedNetwork_a162f4648ab9084f44c23d1213884f6d3}} 
+void {\bfseries send\+Result} (Q\+Byte\+Array \&result)
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classDistributedNetwork_a7467bf77e7be95c46e4c7aae6aa3945c}\label{classDistributedNetwork_a7467bf77e7be95c46e4c7aae6aa3945c}} 
+{\bfseries Distributed\+Network} (int port=2501, Q\+Object $\ast$parent=0)
+\item 
+\mbox{\Hypertarget{classDistributedNetwork_ad833b5e8dafeba806b37be3abb5f5821}\label{classDistributedNetwork_ad833b5e8dafeba806b37be3abb5f5821}} 
+void {\bfseries start\+Server} (int p)
+\item 
+\mbox{\Hypertarget{classDistributedNetwork_a339cc5cf3962778664e79cb54c264b18}\label{classDistributedNetwork_a339cc5cf3962778664e79cb54c264b18}} 
+void {\bfseries distribute} (Q\+Byte\+Array \hyperlink{structdata}{data})
+\item 
+\mbox{\Hypertarget{classDistributedNetwork_a7b3220803f522de0dfd1360c1ccde5ba}\label{classDistributedNetwork_a7b3220803f522de0dfd1360c1ccde5ba}} 
+void {\bfseries wait} () const
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classDistributedNetwork}{Distributed\+Network} class Gestisce il sistema di calcolo distribuito. 
+
+L\+I\+M\+I\+T\+A\+Z\+I\+O\+NI\+: sia questa Classe che la Classe \hyperlink{classClient}{Client} devono essere eseguiti su architetture a 64 bit 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/matteo/\+Progetti/\+Genetix/distributednetwork.\+h\item 
+/home/matteo/\+Progetti/\+Genetix/distributednetwork.\+cpp\end{DoxyCompactItemize}

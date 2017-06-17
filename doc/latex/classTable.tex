@@ -1,0 +1,153 @@
+\hypertarget{classTable}{}\section{Table Class Reference}
+\label{classTable}\index{Table@{Table}}
+
+
+The Tavolo class classe che implementa e gestisce il campo da gioco.  
+
+
+
+
+{\ttfamily \#include $<$table.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classTable_a78948abdf53e4f85773d3e6fabf017d3}\label{classTable_a78948abdf53e4f85773d3e6fabf017d3}} 
+void {\bfseries stampa} () const
+\item 
+\mbox{\Hypertarget{classTable_aeafea436918eac5d5f8968e4cb3d58ca}\label{classTable_aeafea436918eac5d5f8968e4cb3d58ca}} 
+Q\+Vector$<$ Q\+Vector$<$ int $>$ $>$ {\bfseries get} () const
+\item 
+bool \hyperlink{classTable_aa8597647b9049a5403941e3b05cd17cd}{fine\+Gioco} () const
+\item 
+int \hyperlink{classTable_a23f82e4f0607cb45c4fd834649ad2001}{calcola\+Vincitore} () const
+\begin{DoxyCompactList}\small\item\em Tavolo\+::vincitore trova il giocatore che ha vinto la partita. \end{DoxyCompactList}\item 
+Q\+Vector$<$ int $>$ \hyperlink{classTable_aa8f05fc3ad41761c70e62e118af5b515}{mosse\+Valide} (int turno) const
+\begin{DoxyCompactList}\small\item\em Tavolo\+::mosse\+Valide. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classTable_aae569e3c7b8606fbbfb7ffcbb0a71607}\label{classTable_aae569e3c7b8606fbbfb7ffcbb0a71607}} 
+Q\+Vector$<$ int $>$ {\bfseries mosse\+Non\+Valide} (int turno) const
+\item 
+int \hyperlink{classTable_ab011fd41be469dd6f67943a596bab4b0}{esegui\+Mossa} (int turno, int mossa)
+\begin{DoxyCompactList}\small\item\em Partita\+::controllo. \end{DoxyCompactList}\item 
+int \hyperlink{classTable_a6aa69eac7c388df315d1fc7af532cf38}{buche\+Vuote} (int turno) const
+\begin{DoxyCompactList}\small\item\em \hyperlink{classTable_a6aa69eac7c388df315d1fc7af532cf38}{Table\+::buche\+Vuote}. \end{DoxyCompactList}\item 
+int \hyperlink{classTable_ade5ddf4ac9938a74db6b0d5bb8e9e29a}{differenza\+Punti} (int turno) const
+\begin{DoxyCompactList}\small\item\em \hyperlink{classTable_ade5ddf4ac9938a74db6b0d5bb8e9e29a}{Table\+::differenza\+Punti}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classTable_a66bac686e8ada4c2617619deb5e06264}\label{classTable_a66bac686e8ada4c2617619deb5e06264}} 
+void {\bfseries inizializza} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classTable_a5bcd33ee120923fa85241da5ede3bc1f}\label{classTable_a5bcd33ee120923fa85241da5ede3bc1f}} 
+static int {\bfseries rival} (int turno)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The Tavolo class classe che implementa e gestisce il campo da gioco. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classTable_a6aa69eac7c388df315d1fc7af532cf38}\label{classTable_a6aa69eac7c388df315d1fc7af532cf38}} 
+\index{Table@{Table}!buche\+Vuote@{buche\+Vuote}}
+\index{buche\+Vuote@{buche\+Vuote}!Table@{Table}}
+\subsubsection{\texorpdfstring{buche\+Vuote()}{bucheVuote()}}
+{\footnotesize\ttfamily int Table\+::buche\+Vuote (\begin{DoxyParamCaption}\item[{int}]{turno }\end{DoxyParamCaption}) const}
+
+
+
+\hyperlink{classTable_a6aa69eac7c388df315d1fc7af532cf38}{Table\+::buche\+Vuote}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turno} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+numero di buche vuote per il giocatore di turno 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classTable_a23f82e4f0607cb45c4fd834649ad2001}\label{classTable_a23f82e4f0607cb45c4fd834649ad2001}} 
+\index{Table@{Table}!calcola\+Vincitore@{calcola\+Vincitore}}
+\index{calcola\+Vincitore@{calcola\+Vincitore}!Table@{Table}}
+\subsubsection{\texorpdfstring{calcola\+Vincitore()}{calcolaVincitore()}}
+{\footnotesize\ttfamily int Table\+::calcola\+Vincitore (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Tavolo\+::vincitore trova il giocatore che ha vinto la partita. 
+
+\begin{DoxyReturn}{Returns}
+0 se ha vinto giocatore 0 1 se ha vinto giocatore 1 2 se pareggio 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classTable_ade5ddf4ac9938a74db6b0d5bb8e9e29a}\label{classTable_ade5ddf4ac9938a74db6b0d5bb8e9e29a}} 
+\index{Table@{Table}!differenza\+Punti@{differenza\+Punti}}
+\index{differenza\+Punti@{differenza\+Punti}!Table@{Table}}
+\subsubsection{\texorpdfstring{differenza\+Punti()}{differenzaPunti()}}
+{\footnotesize\ttfamily int Table\+::differenza\+Punti (\begin{DoxyParamCaption}\item[{int}]{turno }\end{DoxyParamCaption}) const}
+
+
+
+\hyperlink{classTable_ade5ddf4ac9938a74db6b0d5bb8e9e29a}{Table\+::differenza\+Punti}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turno} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+ritorna la differenza punti tra i giocatori $<$ 0 se il giocatore di turno è in svantaggio = 0 se è in parità \begin{quote}
+0 se è in vantaggio\end{quote}
+
+\end{DoxyReturn}
+\mbox{\Hypertarget{classTable_ab011fd41be469dd6f67943a596bab4b0}\label{classTable_ab011fd41be469dd6f67943a596bab4b0}} 
+\index{Table@{Table}!esegui\+Mossa@{esegui\+Mossa}}
+\index{esegui\+Mossa@{esegui\+Mossa}!Table@{Table}}
+\subsubsection{\texorpdfstring{esegui\+Mossa()}{eseguiMossa()}}
+{\footnotesize\ttfamily int Table\+::esegui\+Mossa (\begin{DoxyParamCaption}\item[{int}]{turno,  }\item[{int}]{mossa }\end{DoxyParamCaption})}
+
+
+
+Partita\+::controllo. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turno} & \\
+\hline
+{\em mossa} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+-\/1 se mossa non valida, 0 se fine turno, 1 se ha un altro turno 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classTable_aa8597647b9049a5403941e3b05cd17cd}\label{classTable_aa8597647b9049a5403941e3b05cd17cd}} 
+\index{Table@{Table}!fine\+Gioco@{fine\+Gioco}}
+\index{fine\+Gioco@{fine\+Gioco}!Table@{Table}}
+\subsubsection{\texorpdfstring{fine\+Gioco()}{fineGioco()}}
+{\footnotesize\ttfamily bool Table\+::fine\+Gioco (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+if the array of playr 0 or player 1 is all empty then the game is finish
+
+return true if endgame is reached return false if game can be continued \mbox{\Hypertarget{classTable_aa8f05fc3ad41761c70e62e118af5b515}\label{classTable_aa8f05fc3ad41761c70e62e118af5b515}} 
+\index{Table@{Table}!mosse\+Valide@{mosse\+Valide}}
+\index{mosse\+Valide@{mosse\+Valide}!Table@{Table}}
+\subsubsection{\texorpdfstring{mosse\+Valide()}{mosseValide()}}
+{\footnotesize\ttfamily Q\+Vector$<$ int $>$ Table\+::mosse\+Valide (\begin{DoxyParamCaption}\item[{int}]{turno }\end{DoxyParamCaption}) const}
+
+
+
+Tavolo\+::mosse\+Valide. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em turno} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+vettore contenente le mosse possibili per il giocatore di turno 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/matteo/\+Progetti/\+Genetix/table.\+h\item 
+/home/matteo/\+Progetti/\+Genetix/table.\+cpp\end{DoxyCompactItemize}

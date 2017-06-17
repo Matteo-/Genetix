@@ -1,0 +1,92 @@
+\hypertarget{classBrain}{}\section{Brain Class Reference}
+\label{classBrain}\index{Brain@{Brain}}
+
+
+Inheritance diagram for Brain\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=133pt]{classBrain__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Brain\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=133pt]{classBrain__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classBrain_ad9637628ba623b059846b435fc11348f}{Brain} (const Q\+Vector$<$ int $>$ \&topology, const Q\+Vector$<$ float $>$ $\ast$weights=0, Q\+Object $\ast$parent=0)
+\item 
+\mbox{\Hypertarget{classBrain_ab93fdda1e6862ee9c39b443c626747c4}\label{classBrain_ab93fdda1e6862ee9c39b443c626747c4}} 
+Q\+Vector$<$ float $>$ {\bfseries get\+Output} (const Q\+Vector$<$ float $>$ \&input)
+\item 
+\mbox{\Hypertarget{classBrain_aaedc1a6837b5da9e107dd32e4758866c}\label{classBrain_aaedc1a6837b5da9e107dd32e4758866c}} 
+void {\bfseries backprop} (const Q\+Vector$<$ float $>$ \&out, const Q\+Vector$<$ float $>$ \&out\+\_\+expct)
+\item 
+\mbox{\Hypertarget{classBrain_aad7d0a00e9bee1d550a42353ef362327}\label{classBrain_aad7d0a00e9bee1d550a42353ef362327}} 
+void {\bfseries print} () const
+\item 
+\mbox{\Hypertarget{classBrain_afbd471807a2991713cf498d9f8727ac4}\label{classBrain_afbd471807a2991713cf498d9f8727ac4}} 
+void {\bfseries info} () const
+\item 
+\mbox{\Hypertarget{classBrain_af170533115f7495684eeb5926fbcc8cd}\label{classBrain_af170533115f7495684eeb5926fbcc8cd}} 
+Q\+Vector$<$ float $>$ \& {\bfseries get\+Weights} ()
+\item 
+\mbox{\Hypertarget{classBrain_a60c602a02b896c888ceeb357594b9d1e}\label{classBrain_a60c602a02b896c888ceeb357594b9d1e}} 
+Q\+Vector$<$ int $>$ \& {\bfseries get\+Topology} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static float \hyperlink{classBrain_acb60a16fa86243d358bb64bfaeee91d0}{rand\+To} (float min, float max)
+\begin{DoxyCompactList}\small\item\em \hyperlink{classBrain_acb60a16fa86243d358bb64bfaeee91d0}{Brain\+::rand\+To}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classBrain_af6f9db04e9c20020c21c7d1e9750b484}\label{classBrain_af6f9db04e9c20020c21c7d1e9750b484}} 
+\hyperlink{classBrain}{Brain} $\ast$ {\bfseries operator+} (const \hyperlink{classBrain}{Brain} \&, const \hyperlink{classBrain}{Brain} \&)
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classBrain_ad9637628ba623b059846b435fc11348f}\label{classBrain_ad9637628ba623b059846b435fc11348f}} 
+\index{Brain@{Brain}!Brain@{Brain}}
+\index{Brain@{Brain}!Brain@{Brain}}
+\subsubsection{\texorpdfstring{Brain()}{Brain()}}
+{\footnotesize\ttfamily Brain\+::\+Brain (\begin{DoxyParamCaption}\item[{const Q\+Vector$<$ int $>$ \&}]{topology,  }\item[{const Q\+Vector$<$ float $>$ $\ast$}]{weights = {\ttfamily 0},  }\item[{Q\+Object $\ast$}]{parent = {\ttfamily 0} }\end{DoxyParamCaption})}
+
+calcolo il numero di neuroni e di pesi totali con dei semplici cicli infine ridimensiono ogni vector con la giusta grandezza
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classBrain_acb60a16fa86243d358bb64bfaeee91d0}\label{classBrain_acb60a16fa86243d358bb64bfaeee91d0}} 
+\index{Brain@{Brain}!rand\+To@{rand\+To}}
+\index{rand\+To@{rand\+To}!Brain@{Brain}}
+\subsubsection{\texorpdfstring{rand\+To()}{randTo()}}
+{\footnotesize\ttfamily float Brain\+::rand\+To (\begin{DoxyParamCaption}\item[{float}]{min,  }\item[{float}]{max }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+\hyperlink{classBrain_acb60a16fa86243d358bb64bfaeee91d0}{Brain\+::rand\+To}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em max} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+float tra min e max 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/matteo/\+Progetti/\+Genetix/brain.\+h\item 
+/home/matteo/\+Progetti/\+Genetix/brain.\+cpp\end{DoxyCompactItemize}
